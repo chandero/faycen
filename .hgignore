@@ -1,0 +1,27 @@
+# use glob syntax.
+syntax: glob
+
+*.dcu
+*.ddp
+*.~pas
+*.csv
+*.xls
+*.dof
+*.~dfm
+*.~ddp
+*.cfg
+*.exe
+*.fbk
+*.fdb
+*.dsk
+*.drc
+*.lnk
+*.xlsx
+*.FDB
+*.DS_Store
+*.~dpr
+entries
+*.xml
+*.dll
+*.~pas
+*.~PAS

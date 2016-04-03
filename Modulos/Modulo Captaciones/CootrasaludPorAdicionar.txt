@@ -1,0 +1,3 @@
+Adicionar a "gen$bancosconnal" ID=0 EFECTIVO 110505...
+Adicionar a "gen$compdescripcion" ID=2 COMPROBANTE APORTES : INGRESO APORTES EN %s, CON DESTINO A : %s, CUENTA No. %d%.2d-%.7d
+Adicionar a "gen$compdescripcion" ID=3 COMPROBANTE APORTES : SALIDA APORTES EN %s, CON DESTINO A : %s, CUENTA No. %d%.2d-%.7d

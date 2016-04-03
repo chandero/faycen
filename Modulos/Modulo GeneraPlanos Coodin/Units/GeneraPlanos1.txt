@@ -1,0 +1,11 @@
+[DBNAME]
+server=192.168.200.254
+path=/dbase/coodin/
+name=coodin300906.fdb
+[EMPRESA]
+name=COODIN LTDA
+nit=890.505.363-6
+Agencia=1
+city=LA PLAYA DE BELEN N.S.
+[ADICIONALES]
+timerrelogin=9
