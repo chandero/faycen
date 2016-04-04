@@ -1395,7 +1395,7 @@ begin
 
                DmComprobante.IBQuery3.Close;
                DmComprobante.IBQuery3.SQL.Clear;
-               DmComprobante.IBQuery3.SQL.Add('SELECT * FROM "con$puc" WHERE p.CODIGO = :CODIGO');
+               DmComprobante.IBQuery3.SQL.Add('SELECT * FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
                DmComprobante.IBQuery3.ParamByName('CODIGO').AsString := CodigoMayor;
                DmComprobante.IBQuery3.Open;
                if (DmComprobante.IBQuery3.RecordCount = 0) then

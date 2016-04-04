@@ -1,6 +1,6 @@
 object frmInformeAuxiliares: TfrmInformeAuxiliares
-  Left = 149
-  Top = 100
+  Left = 450
+  Top = 124
   Width = 386
   Height = 279
   Caption = 'Informe de Auxiliares'
@@ -114,7 +114,7 @@ object frmInformeAuxiliares: TfrmInformeAuxiliares
       Height = 33
       AutoSize = False
       BorderStyle = sbsSunken
-      Color = clCaptionText
+      Color = clWhite
       ParentColor = False
       TabOrder = 4
     end
@@ -125,7 +125,7 @@ object frmInformeAuxiliares: TfrmInformeAuxiliares
       Height = 33
       AutoSize = False
       BorderStyle = sbsSunken
-      Color = clCaptionText
+      Color = clWhite
       ParentColor = False
       TabOrder = 5
     end

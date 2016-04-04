@@ -81,6 +81,23 @@ type
     CDSauxiliarDEBITO: TBCDField;
     CDSauxiliarCREDITO: TBCDField;
     CDSauxiliarASOCIADO: TStringField;
+    DSPcomprobante: TDataSetProvider;
+    CDScomprobante: TClientDataSet;
+    CDScomprobanteID_COMPROBANTE: TIntegerField;
+    CDScomprobanteID_AGENCIA: TSmallintField;
+    CDScomprobanteTIPO_COMPROBANTE: TStringField;
+    CDScomprobanteFECHADIA: TDateField;
+    CDScomprobanteDESCRIPCION: TMemoField;
+    CDScomprobanteTOTAL_DEBITO: TBCDField;
+    CDScomprobanteTOTAL_CREDITO: TBCDField;
+    CDScomprobanteESTADO: TStringField;
+    CDScomprobanteIMPRESO: TSmallintField;
+    CDScomprobanteANULACION: TMemoField;
+    CDScomprobanteID_EMPLEADO: TStringField;
+    IBQtipocomprobanteID: TSmallintField;
+    IBQtipocomprobanteDESCRIPCION: TIBStringField;
+    IBQtipocomprobanteLLAVECSC: TSmallintField;
+    IBQtipocomprobanteABREVIATURA: TIBStringField;
     procedure IBQtipocomprobanteAfterScroll(DataSet: TDataSet);
     procedure IBQcomprobanteAfterScroll(DataSet: TDataSet);
     procedure FormCreate(Sender: TObject);
@@ -91,6 +108,10 @@ type
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure BtnreporteClick(Sender: TObject);
     procedure BitBtn1Click(Sender: TObject);
+    procedure CDScomprobanteDESCRIPCIONGetText(Sender: TField;
+      var Text: String; DisplayText: Boolean);
+    procedure CDScomprobanteAfterScroll(DataSet: TDataSet);
+    procedure CDScomprobanteAfterRefresh(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -111,9 +132,13 @@ procedure TfrmConsultaComprobantes.IBQtipocomprobanteAfterScroll(
   DataSet: TDataSet);
 begin
 
+
         IBQcomprobante.Close;
         IBQcomprobante.ParamByName('TIPO_COMPROBANTE').AsString := DataSet.FieldByName('ID').AsString;
         IBQcomprobante.Open;
+
+        CDScomprobante.Refresh;
+
 
 end;
 
@@ -121,10 +146,19 @@ procedure TfrmConsultaComprobantes.IBQcomprobanteAfterScroll(
   DataSet: TDataSet);
 begin
 
+
+{
         IBAuxiliar.Close;
         IBAuxiliar.ParamByName('TIPO_COMPROBANTE').AsString := DataSet.FieldByName('TIPO_COMPROBANTE').AsString;
         IBAuxiliar.ParamByName('ID_COMPROBANTE').AsInteger := DataSet.FieldByName('ID_COMPROBANTE').AsInteger;
         IBAuxiliar.Open;
+
+        CDSauxiliar.Refresh;
+}
+
+
+
+
 
 end;
 
@@ -143,6 +177,9 @@ begin
         IBAuxiliar.Transaction := dmGeneral.IBTransaction1;
         IBAuxiliar1.Transaction := dmGeneral.IBTransaction1;
 
+        CDScomprobante.Open;
+        CDSauxiliar.Open;
+
 end;
 
 procedure TfrmConsultaComprobantes.FormShow(Sender: TObject);
@@ -152,6 +189,7 @@ begin
         dmGeneral.IBTransaction1.StartTransaction;
 
         IBQtipocomprobante.Open;
+
 end;
 
 procedure TfrmConsultaComprobantes.IBQcomprobanteDESCRIPCIONGetText(
@@ -190,6 +228,34 @@ begin
           prReport1.Variables.ByName['FechaHoy'].AsDateTime := fFechaActual;
           if prReport1.PrepareReport then
             prReport1.PreviewPreparedReport(True);
+end;
+
+procedure TfrmConsultaComprobantes.CDScomprobanteDESCRIPCIONGetText(
+  Sender: TField; var Text: String; DisplayText: Boolean);
+begin
+        Text := Sender.AsString;
+end;
+
+procedure TfrmConsultaComprobantes.CDScomprobanteAfterScroll(
+  DataSet: TDataSet);
+begin
+        IBAuxiliar.Close;
+        IBAuxiliar.ParamByName('TIPO_COMPROBANTE').AsString := DataSet.FieldByName('TIPO_COMPROBANTE').AsString;
+        IBAuxiliar.ParamByName('ID_COMPROBANTE').AsInteger := DataSet.FieldByName('ID_COMPROBANTE').AsInteger;
+        IBAuxiliar.Open;
+
+        CDSauxiliar.Refresh;
+end;
+
+procedure TfrmConsultaComprobantes.CDScomprobanteAfterRefresh(
+  DataSet: TDataSet);
+begin
+        IBAuxiliar.Close;
+        IBAuxiliar.ParamByName('TIPO_COMPROBANTE').AsString := DataSet.FieldByName('TIPO_COMPROBANTE').AsString;
+        IBAuxiliar.ParamByName('ID_COMPROBANTE').AsInteger := DataSet.FieldByName('ID_COMPROBANTE').AsInteger;
+        IBAuxiliar.Open;
+
+        CDSauxiliar.Refresh;
 end;
 
 end.

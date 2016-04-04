@@ -560,7 +560,10 @@ begin
              CDSextractoINTERES.Value := IBQcartera.FieldByName('INTERES').AsCurrency;
              CDSextractoSEGURO.Value := IBQcartera.FieldByName('DESCUENTO').AsCurrency;
              CDSextractoSALDO_SIGUIENTE.Value := IBQcartera.FieldByName('SALDO_SIGUIENTE').AsCurrency;
-             CDSextracto.Post;
+             if (CDSextractoSALDO_ANTERIOR.Value <> 0) or (CDSextractoSALDO_SIGUIENTE.Value <> 0) then
+                 CDSextracto.Post
+             else
+                 CDSextracto.Cancel;
 
              IBQcartera.Next;
         end;

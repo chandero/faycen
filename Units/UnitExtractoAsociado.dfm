@@ -1015,8 +1015,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
         'PROVEEDOR)'
       'WHERE'
       '  ("c".ID_PERSONA = :ID_PERSONA) AND '
-      '  ("d".FECHA_CORTE = :FECHA_CORTE) AND'
-      ' ("c".ID_ESTADO_COLOCACION IN (0,1,2) )'
+      '  ("d".FECHA_CORTE = :FECHA_CORTE) '
       'ORDER BY'
       '  "l".ID_LINEA,'
       '  "c".ID_COLOCACION')

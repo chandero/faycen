@@ -94,6 +94,7 @@ interface
     QuerypucDESCRIPCION_AGENCIA2: TStringField;
     EditSaldoInicial: TJvCurrencyEdit;
     EditSaldoActual: TJvCurrencyEdit;
+    btnValidarMayor: TBitBtn;
     procedure FormCreate(Sender: TObject);
     procedure TreepucCollapsed(Sender: TObject; Node: TTreeNode);
     procedure TreepucExpanded(Sender: TObject; Node: TTreeNode);
@@ -161,6 +162,7 @@ interface
     procedure CheckBoxmovimientoExit(Sender: TObject);
     procedure BtncerrarClick(Sender: TObject);
     procedure EditsaldoinicialExit(Sender: TObject);
+    procedure btnValidarMayorClick(Sender: TObject);
     private
     FCodigoSeleccionado:String;
     procedure creararbol;
@@ -1590,5 +1592,69 @@ begin
 end;
 
 
+
+procedure TfrmMantenimientopuc.btnValidarMayorClick(Sender: TObject);
+begin
+    with DmComprobante.IBQuery1 do
+    begin
+      Close;
+      SQL.Clear;
+      SQL.Add('select ');
+      SQL.Add('*');
+      SQL.Add('from "con$puc"');
+      SQL.Add('Order by "con$puc".ID_AGENCIA,"con$puc".CODIGO');
+      Open;
+        while not Eof do
+         begin
+           Codigo := fieldbyname('CODIGO').AsString;
+           CodigoMayor := EvaluarCodigoMayor(Codigo);
+           if (CodigoMayor <> FieldByName('CODIGOMAYOR').AsString) then
+           begin
+               // Actualizar Codigo Mayor
+               DmComprobante.IBQuery3.Close;
+               DmComprobante.IBQuery3.SQL.Clear;
+               DmComprobante.IBQuery3.SQL.Add('UPDATE "con$puc" p SET p.CODIGOMAYOR = :CODIGOMAYOR WHERE p.CODIGO = :CODIGO');
+               DmComprobante.IBQuery3.ParamByName('CODIGOMAYOR').AsString := CodigoMayor;
+               DmComprobante.IBQuery3.ParamByName('CODIGO').AsString := Codigo;
+               DmComprobante.IBQuery3.ExecSQL;
+           end;
+               // Verificar si codigo mayor existe, de lo contrario crearlo
+
+               DmComprobante.IBQuery3.Close;
+               DmComprobante.IBQuery3.SQL.Clear;
+               DmComprobante.IBQuery3.SQL.Add('SELECT * FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
+               DmComprobante.IBQuery3.ParamByName('CODIGO').AsString := CodigoMayor;
+               DmComprobante.IBQuery3.Open;
+               if (DmComprobante.IBQuery3.RecordCount = 0) then
+               begin
+                   DmComprobante.IBQuery3.Close;
+                   DmComprobante.IBQuery3.SQL.Clear;
+                   DmComprobante.IBQuery3.SQL.Add('INSERT INTO "con$puc" VALUES(');
+                   DmComprobante.IBQuery3.SQL.Add(':"CODIGO", :"ID_AGENCIA", :"CLAVE", :"NOMBRE",');
+                   DmComprobante.IBQuery3.SQL.Add(':"TIPO", :"CODIGOMAYOR", :"MOVIMIENTO", :"NIVEL",');
+                   DmComprobante.IBQuery3.SQL.Add(':"ESBANCO", :"NATURALEZA", :"INFORME",');
+                   DmComprobante.IBQuery3.SQL.Add(':"CENTROCOSTO", :"SALDOINICIAL",:"ESCAPTACION",:"ESCOLOCACION")');
+                   DmComprobante.IBQuery3.ParamByName('CODIGO').AsString         := CodigoMayor;
+                   DmComprobante.IBQuery3.ParamByName('ID_AGENCIA').AsInteger    := agencia;
+                   DmComprobante.IBQuery3.ParamByName('CLAVE').AsString          := '00000';
+                   DmComprobante.IBQuery3.ParamByName('NOMBRE').AsString         := FieldByName('NOMBRE').AsString;
+                   DmComprobante.IBQuery3.ParamByName('TIPO').AsString           := '00';
+                   DmComprobante.IBQuery3.ParamByName('CODIGOMAYOR').AsString    := EvaluarCodigoMayor(CodigoMayor);
+                   DmComprobante.IBQuery3.ParamByName('MOVIMIENTO').AsInteger    := 0;
+                   DmComprobante.IBQuery3.ParamByName('NIVEL').AsInteger         := FieldByName('NIVEL').AsInteger - 1;
+                   DmComprobante.IBQuery3.ParamByName('ESBANCO').AsInteger       := 0;
+                   DmComprobante.IBQuery3.ParamByName('ESCAPTACION').AsInteger   := 0;
+                   DmComprobante.IBQuery3.ParamByName('ESCOLOCACION').AsInteger  := 0;
+                   DmComprobante.IBQuery3.ParamByName('NATURALEZA').AsString     := 'N';
+                   DmComprobante.IBQuery3.ParamByName('INFORME').AsString        := '0';
+                   DmComprobante.IBQuery3.ParamByName('CENTROCOSTO').AsString    := '0';
+                   DmComprobante.IBQuery3.ParamByName('SALDOINICIAL').AsCurrency := 0;
+                   DmComprobante.IBQuery3.ExecSQL;
+               end;
+          next;
+         end;
+      end;
+     Dmcomprobante.IBQuery1.Transaction.Commit;
+end;
 
 end.

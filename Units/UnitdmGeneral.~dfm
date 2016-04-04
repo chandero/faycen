@@ -7,7 +7,7 @@ object dmGeneral: TdmGeneral
   Height = 281
   Width = 273
   object IBDatabase1: TIBDatabase
-    DatabaseName = 'E:\FUNAPOYO.FDB'
+    DatabaseName = '10.0.2.2:D:\Alexander\SGFT\Faycen\FAYCEN.FDB'
     Params.Strings = (
       'lc_ctype=ISO8859_1'
       'user_name=SYSDBA'

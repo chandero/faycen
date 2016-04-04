@@ -1,8 +1,8 @@
 object frmConsultaComprobantes: TfrmConsultaComprobantes
-  Left = 191
-  Top = 120
-  Width = 1030
-  Height = 550
+  Left = 180
+  Top = 58
+  Width = 1049
+  Height = 560
   Caption = 'Consulta de Comprobantes Contables'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -146,8 +146,8 @@ object frmConsultaComprobantes: TfrmConsultaComprobantes
   end
   object Panel1: TPanel
     Left = 0
-    Top = 486
-    Width = 1022
+    Top = 496
+    Width = 1041
     Height = 30
     Align = alBottom
     TabOrder = 3
@@ -328,6 +328,27 @@ object frmConsultaComprobantes: TfrmConsultaComprobantes
       'SELECT * FROM "con$tipocomprobante"')
     Left = 32
     Top = 72
+    object IBQtipocomprobanteID: TSmallintField
+      FieldName = 'ID'
+      Origin = '"con$tipocomprobante"."ID"'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object IBQtipocomprobanteDESCRIPCION: TIBStringField
+      FieldName = 'DESCRIPCION'
+      Origin = '"con$tipocomprobante"."DESCRIPCION"'
+      Size = 100
+    end
+    object IBQtipocomprobanteLLAVECSC: TSmallintField
+      FieldName = 'LLAVECSC'
+      Origin = '"con$tipocomprobante"."LLAVECSC"'
+      Required = True
+    end
+    object IBQtipocomprobanteABREVIATURA: TIBStringField
+      FieldName = 'ABREVIATURA'
+      Origin = '"con$tipocomprobante"."ABREVIATURA"'
+      Required = True
+    end
   end
   object IBQcomprobante: TIBQuery
     Database = dmGeneral.IBDatabase1
@@ -596,9 +617,9 @@ object frmConsultaComprobantes: TfrmConsultaComprobantes
     Top = 72
   end
   object DScomprobante: TDataSource
-    DataSet = IBQcomprobante
-    Left = 532
-    Top = 68
+    DataSet = CDScomprobante
+    Left = 564
+    Top = 100
   end
   object DSauxiliar: TDataSource
     DataSet = CDSauxiliar
@@ -3536,5 +3557,72 @@ object frmConsultaComprobantes: TfrmConsultaComprobantes
     Constraints = True
     Left = 152
     Top = 344
+  end
+  object DSPcomprobante: TDataSetProvider
+    DataSet = IBQcomprobante
+    Constraints = True
+    Left = 528
+    Top = 144
+  end
+  object CDScomprobante: TClientDataSet
+    Aggregates = <>
+    Params = <>
+    ProviderName = 'DSPcomprobante'
+    ReadOnly = True
+    AfterScroll = CDScomprobanteAfterScroll
+    AfterRefresh = CDScomprobanteAfterRefresh
+    Left = 560
+    Top = 144
+    object CDScomprobanteID_COMPROBANTE: TIntegerField
+      FieldName = 'ID_COMPROBANTE'
+      Required = True
+    end
+    object CDScomprobanteID_AGENCIA: TSmallintField
+      FieldName = 'ID_AGENCIA'
+      Required = True
+    end
+    object CDScomprobanteTIPO_COMPROBANTE: TStringField
+      FieldName = 'TIPO_COMPROBANTE'
+      Required = True
+      FixedChar = True
+      Size = 2
+    end
+    object CDScomprobanteFECHADIA: TDateField
+      FieldName = 'FECHADIA'
+      Required = True
+    end
+    object CDScomprobanteDESCRIPCION: TMemoField
+      FieldName = 'DESCRIPCION'
+      OnGetText = CDScomprobanteDESCRIPCIONGetText
+      BlobType = ftMemo
+      Size = 8
+    end
+    object CDScomprobanteTOTAL_DEBITO: TBCDField
+      FieldName = 'TOTAL_DEBITO'
+      Precision = 18
+      Size = 3
+    end
+    object CDScomprobanteTOTAL_CREDITO: TBCDField
+      FieldName = 'TOTAL_CREDITO'
+      Precision = 18
+      Size = 3
+    end
+    object CDScomprobanteESTADO: TStringField
+      FieldName = 'ESTADO'
+      FixedChar = True
+      Size = 1
+    end
+    object CDScomprobanteIMPRESO: TSmallintField
+      FieldName = 'IMPRESO'
+    end
+    object CDScomprobanteANULACION: TMemoField
+      FieldName = 'ANULACION'
+      BlobType = ftMemo
+      Size = 8
+    end
+    object CDScomprobanteID_EMPLEADO: TStringField
+      FieldName = 'ID_EMPLEADO'
+      Size = 50
+    end
   end
 end
