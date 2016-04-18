@@ -54,7 +54,6 @@ type
     IBScsc: TIBSQL;
     IBTcsc: TIBTransaction;
     IBAuxiliar1: TIBQuery;
-    Report1: TprTxReport;
     IBAuxiliar: TIBQuery;
     IBAuxiliarID_COMPROBANTE: TIntegerField;
     IBAuxiliarDESCRIPCION_AGENCIA: TIBStringField;
@@ -76,6 +75,8 @@ type
     IBAuxiliarDEBITO: TIBBCDField;
     IBAuxiliarCREDITO: TIBBCDField;
     IBQuery1: TIBQuery;
+    Report1: TprTxReport;
+    Btnreporte: TBitBtn;
     procedure CmdBuscarClick(Sender: TObject);
     procedure EdNumeroIdentificacionExit(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -95,6 +96,7 @@ type
     procedure Report1InitDetailBandDataSet(Sender: TObject;
       DetailBand: TprBand; DataSet: TObject; const DataSetName: String);
     procedure CmdNuevoClick(Sender: TObject);
+    procedure BtnreporteClick(Sender: TObject);
   private
     { Private declarations }
     procedure Inicializar;
@@ -146,6 +148,7 @@ var
   vConsignaAhorros:Currency;
   Banco:Integer;
   FechaCosignacion : TDate;
+  Consec: String;
 
 implementation
 
@@ -179,6 +182,8 @@ begin
             IBQbancos.Open;
             IBQbancos.Last;
             DBLCBBancos.KeyValue := Banco;
+            Btnreporte.Enabled := False;
+            Consec := '';
 end;
 
 procedure TfrmRecaudoCuotaProyectada.CmdBuscarClick(Sender: TObject);
@@ -301,8 +306,9 @@ var
         id_codigo: Integer;
         CodigoCargo: String;
         CodigoPago:String;
-        Consec: String;
+
 begin
+
         if MessageDlg('Seguro de Realizar el Abono?',mtConfirmation,[mbYes,mbNo],0) = mrNo then begin
            Exit;
         end;
@@ -459,56 +465,10 @@ begin
         IBQmovimiento.ParamByName('COMPROBANTE').AsInteger := StrToInt(Consec);
         IBQmovimiento.ExecSQL;
 
-        //Imprimir Nota
+        dmGeneral.IBTransaction1.Commit;
+        Btnreporte.Enabled := True;
 
-        with IBAuxiliar do begin
-          Close;
-          if Transaction.InTransaction then
-             Transaction.Commit;
-          Transaction.StartTransaction;
-          SQL.Clear;
-          SQL.Add('select');
-          SQL.Add('"con$auxiliar".ID_COMPROBANTE,');
-          SQL.Add('"gen$agencia".DESCRIPCION_AGENCIA,');
-          SQL.Add('"con$tipocomprobante".DESCRIPCION AS TIPO,');
-          SQL.Add('"con$comprobante".FECHADIA,');
-          SQL.Add('"con$comprobante".DESCRIPCION,');
-          SQL.Add('"gen$empleado".PRIMER_APELLIDO,');
-          SQL.Add('"gen$empleado".SEGUNDO_APELLIDO,');
-          SQL.Add('"gen$empleado".NOMBRE,');
-          SQL.Add('"con$auxiliar".CODIGO,');
-          SQL.Add('"con$puc".NOMBRE AS CUENTA,');
-          SQL.Add('"con$auxiliar".ID_CUENTA,');
-          SQL.Add('"con$auxiliar".ID_COLOCACION,');
-          SQL.Add('"con$auxiliar".ID_IDENTIFICACION,');
-          SQL.Add('"con$auxiliar".ID_PERSONA,');
-          SQL.Add('"gen$persona".PRIMER_APELLIDO AS PRIMER_APELLIDO1,');
-          SQL.Add('"gen$persona".SEGUNDO_APELLIDO AS SEGUNDO_APELLIDO1,');
-          SQL.Add('"gen$persona".NOMBRE AS NOMBRE1,');
-          SQL.Add('"con$auxiliar".DEBITO,');
-          SQL.Add('"con$auxiliar".CREDITO');
-          SQL.Add('from');
-          SQL.Add('"con$comprobante"');
-          SQL.Add('LEFT JOIN "con$auxiliar" ON ("con$comprobante".ID_COMPROBANTE = "con$auxiliar".ID_COMPROBANTE and "con$comprobante".TIPO_COMPROBANTE = "con$auxiliar".TIPO_COMPROBANTE)');
-          SQL.Add('LEFT JOIN "con$tipocomprobante" ON ("con$comprobante".TIPO_COMPROBANTE  = "con$tipocomprobante".ID )');
-          SQL.Add('LEFT JOIN "gen$agencia" ON ("con$auxiliar".ID_AGENCIA = "gen$agencia".ID_AGENCIA)');
-          SQL.Add('LEFT JOIN "con$puc" ON ("con$auxiliar".CODIGO = "con$puc".CODIGO)');
-          SQL.Add('LEFT JOIN "gen$empleado" ON ("con$comprobante".ID_EMPLEADO = "gen$empleado".ID_EMPLEADO)');
-          SQL.Add('LEFT JOIN "gen$persona" ON ("con$auxiliar".ID_IDENTIFICACION = "gen$persona".ID_IDENTIFICACION and');
-          SQL.Add('"con$auxiliar".ID_PERSONA = "gen$persona".ID_PERSONA )');
-          SQL.Add('where "con$comprobante".ID_AGENCIA = :ID_AGENCIA and ');
-          SQL.Add('"con$comprobante".TIPO_COMPROBANTE = :TIPO_COMPROBANTE and ');
-          SQL.Add('"con$comprobante".ID_COMPROBANTE = :ID_COMPROBANTE');
-          SQL.Add('order by "con$auxiliar".ID_COMPROBANTE,"con$auxiliar".CODIGO');
-          ParamByName('ID_AGENCIA').AsInteger := Agencia;
-          ParamByName('TIPO_COMPROBANTE').AsInteger := 1;
-          ParamByName('ID_COMPROBANTE').AsInteger := StrToInt(Consec);
-        end;
-        report1.Variables.ByName['EMPRESA'].AsString := Empresa;
-        report1.Variables.ByName['NIT'].AsString := Nit;
-        if report1.PrepareReport then
-           report1.PreviewPreparedReport(True);
-
+        BtnreporteClick(self);
 
 
 end;
@@ -580,6 +540,60 @@ end;
 procedure TfrmRecaudoCuotaProyectada.CmdNuevoClick(Sender: TObject);
 begin
         Inicializar;
+end;
+
+procedure TfrmRecaudoCuotaProyectada.BtnreporteClick(Sender: TObject);
+begin
+        //Imprimir Nota
+
+        with IBAuxiliar do begin
+          Close;
+          if Transaction.InTransaction then
+             Transaction.Commit;
+          Transaction.StartTransaction;
+          SQL.Clear;
+          SQL.Add('select');
+          SQL.Add('"con$auxiliar".ID_COMPROBANTE,');
+          SQL.Add('"gen$agencia".DESCRIPCION_AGENCIA,');
+          SQL.Add('"con$tipocomprobante".DESCRIPCION AS TIPO,');
+          SQL.Add('"con$comprobante".FECHADIA,');
+          SQL.Add('"con$comprobante".DESCRIPCION,');
+          SQL.Add('"gen$empleado".PRIMER_APELLIDO,');
+          SQL.Add('"gen$empleado".SEGUNDO_APELLIDO,');
+          SQL.Add('"gen$empleado".NOMBRE,');
+          SQL.Add('"con$auxiliar".CODIGO,');
+          SQL.Add('"con$puc".NOMBRE AS CUENTA,');
+          SQL.Add('"con$auxiliar".ID_CUENTA,');
+          SQL.Add('"con$auxiliar".ID_COLOCACION,');
+          SQL.Add('"con$auxiliar".ID_IDENTIFICACION,');
+          SQL.Add('"con$auxiliar".ID_PERSONA,');
+          SQL.Add('"gen$persona".PRIMER_APELLIDO AS PRIMER_APELLIDO1,');
+          SQL.Add('"gen$persona".SEGUNDO_APELLIDO AS SEGUNDO_APELLIDO1,');
+          SQL.Add('"gen$persona".NOMBRE AS NOMBRE1,');
+          SQL.Add('"con$auxiliar".DEBITO,');
+          SQL.Add('"con$auxiliar".CREDITO');
+          SQL.Add('from');
+          SQL.Add('"con$comprobante"');
+          SQL.Add('LEFT JOIN "con$auxiliar" ON ("con$comprobante".ID_COMPROBANTE = "con$auxiliar".ID_COMPROBANTE and "con$comprobante".TIPO_COMPROBANTE = "con$auxiliar".TIPO_COMPROBANTE)');
+          SQL.Add('LEFT JOIN "con$tipocomprobante" ON ("con$comprobante".TIPO_COMPROBANTE  = "con$tipocomprobante".ID )');
+          SQL.Add('LEFT JOIN "gen$agencia" ON ("con$auxiliar".ID_AGENCIA = "gen$agencia".ID_AGENCIA)');
+          SQL.Add('LEFT JOIN "con$puc" ON ("con$auxiliar".CODIGO = "con$puc".CODIGO)');
+          SQL.Add('LEFT JOIN "gen$empleado" ON ("con$comprobante".ID_EMPLEADO = "gen$empleado".ID_EMPLEADO)');
+          SQL.Add('LEFT JOIN "gen$persona" ON ("con$auxiliar".ID_IDENTIFICACION = "gen$persona".ID_IDENTIFICACION and');
+          SQL.Add('"con$auxiliar".ID_PERSONA = "gen$persona".ID_PERSONA )');
+          SQL.Add('where "con$comprobante".ID_AGENCIA = :ID_AGENCIA and ');
+          SQL.Add('"con$comprobante".TIPO_COMPROBANTE = :TIPO_COMPROBANTE and ');
+          SQL.Add('"con$comprobante".ID_COMPROBANTE = :ID_COMPROBANTE');
+          SQL.Add('order by "con$auxiliar".ID_COMPROBANTE,"con$auxiliar".CODIGO');
+          ParamByName('ID_AGENCIA').AsInteger := Agencia;
+          ParamByName('TIPO_COMPROBANTE').AsInteger := 10;
+          ParamByName('ID_COMPROBANTE').AsInteger := StrToInt(Consec);
+          Open;
+        end;
+        report1.Variables.ByName['EMPRESA'].AsString := Empresa;
+        report1.Variables.ByName['NIT'].AsString := Nit;
+        if report1.PrepareReport then
+           report1.PreviewPreparedReport(True);
 end;
 
 end.

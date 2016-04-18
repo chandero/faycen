@@ -184,6 +184,10 @@ begin
         While not QueryCompcierre.Eof do
          begin
            id_comprobante := FieldByName('ID_COMPROBANTE').AsInteger;
+           if (id_comprobante = 139) then
+           begin
+               Application.ProcessMessages;
+           end;
            tipo := StrToInt(Trim(FieldByName('TIPO_COMPROBANTE').AsString));
            descripcion := FieldByName('DESCRIPCION').AsString;
            abreviatura := FieldByName('ABREVIATURA').AsString;
@@ -603,7 +607,7 @@ end;
 
 procedure Tfrmcierredia.FormShow(Sender: TObject);
 begin
-        _conn.IBTransaction1.StartTransaction;
+
         lerror := Tlist.Create;
         EdFechainicial.Date := fFechaActual;
         edfechafinal.Date := fFechaActual;        

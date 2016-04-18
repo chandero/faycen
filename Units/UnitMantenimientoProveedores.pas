@@ -5,7 +5,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, IBCustomDataSet, IBQuery, Grids, DBGrids, StdCtrls, Mask,
-  DBCtrls, Buttons, ExtCtrls;
+  DBCtrls, Buttons, ExtCtrls, IBTable;
 
 type
   TfrmMantenimientoProveedores = class(TForm)
@@ -22,6 +22,7 @@ type
     BitBtn3: TBitBtn;
     BitBtn1: TBitBtn;
     Btnlimpiar: TBitBtn;
+    IBTproveedor: TIBTable;
     procedure CmdPUCClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -30,6 +31,7 @@ type
     procedure BitBtn1Click(Sender: TObject);
     procedure BitBtn3Click(Sender: TObject);
     procedure IBQproveedorAfterScroll(DataSet: TDataSet);
+    procedure IBTproveedorAfterScroll(DataSet: TDataSet);
   private
     { Private declarations }
   public
@@ -56,8 +58,6 @@ begin
         begin
             frmPUC.btnSeleccionar.Enabled := false;
             EdCodigo.Text := frmPUC.CodigoSeleccionado;
-            dmGeneral.IBTransaction1.Commit;
-            dmGeneral.IBTransaction1.StartTransaction;
         end;
         frmPUC.Free;
 end;
@@ -69,45 +69,53 @@ begin
 
         IBQproveedor.Database := dmGeneral.IBDatabase1;
         IBQproveedor.Transaction := dmGeneral.IBTransaction1;
+        IBTproveedor.Database := dmGeneral.IBDatabase1;
+        IBTproveedor.Transaction := dmGeneral.IBTransaction1;
 end;
 
 procedure TfrmMantenimientoProveedores.FormShow(Sender: TObject);
 begin
-        if (IBQproveedor.Transaction.InTransaction) then
-          IBQproveedor.Transaction.Commit;
-        IBQproveedor.Transaction.StartTransaction;
-        IBQproveedor.Open;
+        if (IBTproveedor.Transaction.InTransaction) then
+          IBTproveedor.Transaction.Commit;
+        IBTproveedor.Transaction.StartTransaction;
+        IBTproveedor.Open;
 end;
 
 procedure TfrmMantenimientoProveedores.CmdCerrarClick(Sender: TObject);
 begin
-        IBQproveedor.Transaction.Commit;
+        IBTproveedor.Transaction.Commit;
         dmGeneral.Free;
         Close;
 end;
 
 procedure TfrmMantenimientoProveedores.BtnlimpiarClick(Sender: TObject);
 begin
-        IBQproveedor.Append;
+        IBTproveedor.Append;
 end;
 
 procedure TfrmMantenimientoProveedores.BitBtn1Click(Sender: TObject);
 begin
-        IBQproveedor.Post;
+        IBTproveedor.Post;
 end;
 
 procedure TfrmMantenimientoProveedores.BitBtn3Click(Sender: TObject);
 begin
         if MessageDlg('Seguro de Eliminar el Proveedor?',mtConfirmation,[mbYes, mbNo],0) = mrYes then
         begin
-                IBQproveedor.Delete;
+                IBTproveedor.Delete;
         end;
 end;
 
 procedure TfrmMantenimientoProveedores.IBQproveedorAfterScroll(
   DataSet: TDataSet);
 begin
-        IBQproveedor.Edit;
+        IBTproveedor.Edit;
+end;
+
+procedure TfrmMantenimientoProveedores.IBTproveedorAfterScroll(
+  DataSet: TDataSet);
+begin
+        IBTproveedor.Edit;
 end;
 
 end.

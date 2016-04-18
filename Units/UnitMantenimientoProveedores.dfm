@@ -1,6 +1,6 @@
 object frmMantenimientoProveedores: TfrmMantenimientoProveedores
-  Left = 452
-  Top = 111
+  Left = 387
+  Top = 101
   Width = 665
   Height = 466
   Caption = 'Mantenimiento de Proveedores'
@@ -268,7 +268,7 @@ object frmMantenimientoProveedores: TfrmMantenimientoProveedores
     end
   end
   object DSgrid: TDataSource
-    DataSet = IBQproveedor
+    DataSet = IBTproveedor
     Left = 32
     Top = 56
   end
@@ -278,5 +278,11 @@ object frmMantenimientoProveedores: TfrmMantenimientoProveedores
       'select * from GEN$PROVEEDOR')
     Left = 72
     Top = 112
+  end
+  object IBTproveedor: TIBTable
+    AfterScroll = IBTproveedorAfterScroll
+    TableName = 'GEN$PROVEEDOR'
+    Left = 112
+    Top = 72
   end
 end

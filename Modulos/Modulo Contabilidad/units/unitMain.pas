@@ -986,7 +986,7 @@ end;
 procedure TfrmMain.DesembolsodeCrdito1Click(Sender: TObject);
 begin
         FrmDesembolso := TFrmDesembolso.Create(self);
-        FrmDesembolso.ShowModal
+        FrmDesembolso.ShowModal;
 end;
 
 procedure TfrmMain.VisarCrdito1Click(Sender: TObject);
@@ -1009,7 +1009,7 @@ var
   frmRecaudoCuotaProyectada: TfrmRecaudoCuotaProyectada;
 begin
         frmRecaudoCuotaProyectada := TfrmRecaudoCuotaProyectada.Create(self);
-        frmRecaudoCuotaProyectada.Show;
+        frmRecaudoCuotaProyectada.ShowModal;
 end;
 
 procedure TfrmMain.MantenimientodeProveedores1Click(Sender: TObject);
@@ -1017,7 +1017,7 @@ var
   frmMantenimientoProveedores : TfrmMantenimientoProveedores;
 begin
       frmMantenimientoProveedores := TfrmMantenimientoProveedores.Create(self);
-      frmMantenimientoProveedores.show;
+      frmMantenimientoProveedores.showModal;
 end;
 
 procedure TfrmMain.ConsultadeComprobantes1Click(Sender: TObject);
@@ -1025,7 +1025,7 @@ var
    frmConsultaComprobates : TfrmConsultaComprobantes;
 begin
         frmConsultaComprobantes := TfrmConsultaComprobantes.Create(self);
-        frmConsultaComprobantes.Show;
+        frmConsultaComprobantes.ShowModal;
 end;
 
 procedure TfrmMain.ExtractoAsociado1Click(Sender: TObject);

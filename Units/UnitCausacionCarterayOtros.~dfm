@@ -806,7 +806,7 @@ object frmCausacionCarterayOtros: TfrmCausacionCarterayOtros
       00000C0066724442446174615365743100000000FC00002F00464F524D554C41
       52494F20444520415045525455524120592041435455414C495A4143494F4E20
       4445204441544F530E00414C4558414E444552204352555A0100310100310100
-      3001003000004D00E7E62F247BB3E4400763CE178CBBE440}
+      3001003000004D00E7E62F247BB3E440A63BEC6C2CBDE440}
   end
   object frCSVExport1: TfrCSVExport
     ScaleX = 1
@@ -1291,6 +1291,63 @@ object frmCausacionCarterayOtros: TfrmCausacionCarterayOtros
       item
         DataType = ftUnknown
         Name = 'MOROSIDAD'
+        ParamType = ptUnknown
+      end>
+  end
+  object IBQcargomes: TIBQuery
+    SQL.Strings = (
+      'INSERT INTO GEN$PERSONAMOVIMIENTO'
+      'VALUES ('
+      ':ID_IDENTIFICACION,'
+      ':ID_PERSONA,'
+      ':FECHA,'
+      ':HORA,'
+      ':DEBITO,'
+      ':CREDITO,'
+      ':TIPO_COMPROBANTE,'
+      ':COMPROBANTE'
+      ')')
+    Left = 224
+    Top = 320
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_IDENTIFICACION'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'ID_PERSONA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'HORA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'DEBITO'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'CREDITO'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'TIPO_COMPROBANTE'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'COMPROBANTE'
         ParamType = ptUnknown
       end>
   end

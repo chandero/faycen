@@ -26,12 +26,12 @@ object TprTxReport
     item
       Name = 'EMPRESA'
       ValueType = 'prvvtString'
-      Value = 'COOPSERVIR LTDA'
+      Value = 'EMPRESA'
     end
     item
       Name = 'NIT'
       ValueType = 'prvvtString'
-      Value = '890.505.363-6'
+      Value = 'NIT'
     end
     item
       Name = 'ALIAS'
@@ -43,7 +43,6 @@ object TprTxReport
       ValueType = 'prvvtString'
       Value = ''
     end>
-  PrinterName = '\\DEPARTAS02\Epson LX-300'
   WrapAfterColumn = 0
   EjectPageAfterPrint = False
   LinesOnPage = 0
@@ -51,8 +50,8 @@ object TprTxReport
   ToLine = 0
   ExportFromLine = 0
   ExportToLine = 0
-  Left = 510
-  Top = 458
+  Left = 270
+  Top = 226
   SystemInfo = (
     'OS: WIN32_NT 5.1.2600 Service Pack 3'
     ''

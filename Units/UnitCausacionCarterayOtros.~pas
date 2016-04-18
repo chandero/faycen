@@ -81,6 +81,7 @@ type
     CDSplanoID_PERSONA: TStringField;
     CDSreporteSEGURO: TCurrencyField;
     IBQcausaciondiaria: TIBQuery;
+    IBQcargomes: TIBQuery;
     procedure CmdCerrarClick(Sender: TObject);
     procedure btnProcesarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -381,6 +382,7 @@ begin
         IBQauxiliar.Database := dmGeneral.IBDatabase1;
         IBQcausaciondiaria.Database := dmGeneral.IBDatabase1;
         IBQextractocolocacion.Database := dmGeneral.IBDatabase1;
+        IBQcargomes.Database := dmGeneral.IBDatabase1;
 
         IBQpersona.Transaction := dmGeneral.IBTransaction1;
         IBQcartera.Transaction := dmGeneral.IBTransaction1;
@@ -395,6 +397,7 @@ begin
         IBQauxiliar.Transaction := dmGeneral.IBTransaction1;
         IBQcausaciondiaria.Transaction := dmGeneral.IBTransaction1;
         IBQextractocolocacion.Transaction := dmGeneral.IBTransaction1;
+        IBQcargomes.Transaction := dmGeneral.IBTransaction1;
 end;
 
 procedure TfrmCausacionCarterayOtros.CDSgridCalcFields(DataSet: TDataSet);
@@ -428,6 +431,7 @@ var
  TipoOperacion: Integer;
  Consec : Integer;
  HoraActual : TTime;
+ CargoMes : Currency;
 begin
       CDSgrid.Filtered := False;
       CDSgrid.First;
@@ -631,7 +635,7 @@ begin
                  IBSQL1.SQL.Add(':DOCUMENTO_MOVIMIENTO, :DESCRIPCION_MOVIMIENTO, :VALOR_DEBITO, :VALOR_CREDITO');
                  IBSQL1.SQL.Add(')');
                  IBSQL1.ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                 IBSQL1.ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQdeposito.FieldByName('ID_TIPO_CAPTACIOON').AsInteger;
+                 IBSQL1.ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQdeposito.FieldByName('ID_TIPO_CAPTACION').AsInteger;
                  IBSQL1.ParamByName('NUMERO_CUENTA').AsInteger := IBQdeposito.FieldByName('NUMERO_CUENTA').AsInteger;
                  IBSQL1.ParamByName('DIGITO_CUENTA').AsInteger := IBQdeposito.FieldByName('DIGITO_CUENTA').AsInteger;
                  IBSQL1.ParamByName('FECHA_MOVIMIENTO').AsDate := EdFechaNota.Date;
@@ -657,12 +661,12 @@ begin
                  IBQdeposito.ExecSQL;
                  end;
            end;
+
+
            Application.ProcessMessages;
            CDSgrid.Next;
       end;
-      // Contabilizar Cartera
 
-      // Contabilizar Depositos
 
       IBQdeposito.Transaction.Commit;
       btnAplicar.Enabled := False;
@@ -875,6 +879,8 @@ var
          ConsecInteresCaja: Integer;
 
          frmProgeso : TfrmProgreso;
+
+         HoraHoy: TTime;
 begin
 
         if (MessageDlg('Procesar Comprobante de Nomina?',mtConfirmation, [mbYes,MbNo],0) = mrYes) then
@@ -891,6 +897,8 @@ begin
         ConsecLibranza := ObtenerConsecutivo(IBSQLcomprobante, 14);
         ConsecCaja:= ObtenerConsecutivo(IBSQLcomprobante, 15);
         ConsecInteresLibranza := ObtenerConsecutivo(IBSQLcomprobante, 9);
+
+        HoraHoy := fHoraActual;
 
         IBQpersona.Close;
         IBQpersona.SQL.Clear;
@@ -1035,6 +1043,8 @@ begin
                IBQauxiliar.ParamByName('ESTADOAUX').AsString := 'O';
                IBQauxiliar.ExecSQL;
 
+
+
                // Contabilizo Seguro
 
                Valor := IBQcartera.FieldByName('DESCUENTO').AsCurrency;
@@ -1154,7 +1164,20 @@ begin
                 IBQauxiliar.ParamByName('ESTADOAUX').AsString := 'O';
                 IBQauxiliar.ExecSQL;                //
 
+                IBQcargomes.Close;
+                IBQcargomes.ParamByName('ID_IDENTIFICACION').AsInteger :=  IBQpersona.FieldByName('ID_IDENTIFICACION').AsInteger;
+                IBQcargomes.ParamByName('ID_PERSONA').AsString := IBQpersona.FieldByName('ID_PERSONA').AsString;
+                IBQcargomes.ParamByName('FECHA').AsDate :=  EdFechaNota.Date;
+                IBQcargomes.ParamByName('HORA').AsTime := HoraHoy;
+                IBQcargomes.ParamByName('DEBITO').AsCurrency := Valor;
+                IBQcargomes.ParamByName('CREDITO').AsCurrency := 0;
+                IBQcargomes.ParamByName('TIPO_COMPROBANTE').AsInteger := 9;
+                IBQcargomes.ParamByName('COMPROBANTE').AsInteger := ConsecInteresLibranza;
+                IBQcargomes.ExecSQL;
+
                 TotalInteres := TotalInteres + Valor;
+
+
                //
                end;
 
@@ -1236,13 +1259,24 @@ begin
                 IBQauxiliar.ParamByName('ESTADOAUX').AsString := 'O';
                 IBQauxiliar.ExecSQL;
 
+                IBQcargomes.Close;
+                IBQcargomes.ParamByName('ID_IDENTIFICACION').AsInteger :=  IBQpersona.FieldByName('ID_IDENTIFICACION').AsInteger;
+                IBQcargomes.ParamByName('ID_PERSONA').AsString := IBQpersona.FieldByName('ID_PERSONA').AsString;
+                IBQcargomes.ParamByName('FECHA').AsDate :=  EdFechaNota.Date;
+                IBQcargomes.ParamByName('HORA').AsTime := HoraHoy;
+                IBQcargomes.ParamByName('DEBITO').AsCurrency := CargoMesCapitalNomina;
+                IBQcargomes.ParamByName('CREDITO').AsCurrency := 0;
+                IBQcargomes.ParamByName('TIPO_COMPROBANTE').AsInteger := 14;
+                IBQcargomes.ParamByName('COMPROBANTE').AsInteger := ConsecLibranza;
+                IBQcargomes.ExecSQL;
+
                 TotalLibranza := TotalLibranza + CargoMesCapitalNomina;
              end;
 
              if (CargoMesCapitalCaja > 0) then
              begin
-                IBQauxiliar.ParamByName('TIPO_COMPROBANTE').AsInteger :=  14;
-                IBQauxiliar.ParamByName('ID_COMPROBANTE').AsInteger := ConsecLibranza;
+                IBQauxiliar.ParamByName('TIPO_COMPROBANTE').AsInteger :=  15;
+                IBQauxiliar.ParamByName('ID_COMPROBANTE').AsInteger := ConsecCaja;
                 IBQauxiliar.ParamByName('ID_AGENCIA').AsInteger:= Agencia;
                 IBQauxiliar.ParamByName('FECHA').AsDate := EdFechaNota.Date;
                 IBQauxiliar.ParamByName('CODIGO').AsString := CodigoCapitalCausacionCaja;
@@ -1256,6 +1290,17 @@ begin
                 IBQauxiliar.ParamByName('TASA_RETENCION').Clear;
                 IBQauxiliar.ParamByName('ESTADOAUX').AsString := 'O';
                 IBQauxiliar.ExecSQL;
+
+                IBQcargomes.Close;
+                IBQcargomes.ParamByName('ID_IDENTIFICACION').AsInteger :=  IBQpersona.FieldByName('ID_IDENTIFICACION').AsInteger;
+                IBQcargomes.ParamByName('ID_PERSONA').AsString := IBQpersona.FieldByName('ID_PERSONA').AsString;
+                IBQcargomes.ParamByName('FECHA').AsDate :=  EdFechaNota.Date;
+                IBQcargomes.ParamByName('HORA').AsTime := HoraHoy;
+                IBQcargomes.ParamByName('DEBITO').AsCurrency := CargoMesCapitalCaja;
+                IBQcargomes.ParamByName('CREDITO').AsCurrency := 0;
+                IBQcargomes.ParamByName('TIPO_COMPROBANTE').AsInteger := 15;
+                IBQcargomes.ParamByName('COMPROBANTE').AsInteger := ConsecCaja;
+                IBQcargomes.ExecSQL;
 
                 TotalCaja := TotalCaja + CargoMesCapitalCaja;
 
