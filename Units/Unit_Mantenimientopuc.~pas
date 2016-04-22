@@ -1603,7 +1603,6 @@ begin
       SQL.Add('*');
       SQL.Add('from "con$puc"');
       SQL.Add('Order by "con$puc".ID_AGENCIA,"con$puc".CODIGO');
-      ParamByName('ID_AGENCIA').AsInteger := Agencia;
       Open;
         while not Eof do
          begin

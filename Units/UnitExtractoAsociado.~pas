@@ -97,7 +97,8 @@ type
     IBQproceso: TIBQuery;
     IBQrevalorizacion: TIBQuery;
     IBQrevalorizacionmov: TIBQuery;
-    IBExtract1: TIBExtract;
+    IBQdescuentocartera: TIBQuery;
+    IBQcarteraOLD: TIBQuery;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnBuscarClick(Sender: TObject);
@@ -143,6 +144,7 @@ begin
         IBQproceso.Database := dmGeneral.IBDatabase1;
         IBQrevalorizacion.Database := dmGeneral.IBDatabase1;
         IBQrevalorizacionmov.Database := dmGeneral.IBDatabase1;
+        IBQdescuentocartera.Database := dmGeneral.IBDatabase1;
 
 
         IBQasociado.Transaction := dmGeneral.IBTransaction1;
@@ -158,6 +160,7 @@ begin
         IBQproceso.Transaction := dmGeneral.IBTransaction1;
         IBQrevalorizacion.Transaction := dmGeneral.IBTransaction1;
         IBQrevalorizacionmov.Transaction := dmGeneral.IBTransaction1;
+        IBQdescuentocartera.Transaction := dmGeneral.IBTransaction1;
 end;
 
 procedure TfrmExtractoAsociado.FormShow(Sender: TObject);
@@ -290,6 +293,11 @@ var
   Cuota: integer;
   revalorizacion: Currency;
   fecharevalorizacion: TDate;
+  SaldoAnteriorCartera : Currency;
+  Capital : Currency;
+  Interes : Currency;
+  Seguro : Currency;
+  SaldoSiguiente : Currency;
 begin
 
         btnProcesar.Enabled := False;
@@ -524,6 +532,11 @@ begin
 
         while not IBQcartera.Eof do
         begin
+             // Buscar movimiento
+                IBQdescuentocartera.Close;
+                IBQdescuentocartera.ParamByName('ID_COLOCACION').AsString := IBQcartera.FieldByName('ID_COLOCACION').AsString;
+                IBQdescuentocartera.ParamByName('FECHA_CORTE').AsDate := fechacorte;
+                IBQdescuentocartera.Open;
                 Cuota := 0;
              // buscar cuota del corte
                 IBQproceso.Close;
@@ -543,6 +556,22 @@ begin
                     IBQproceso.Next;
                 end;
              //
+             if IBQdescuentocartera.RecordCount > 0 then
+             begin
+                     SaldoAnteriorCartera  := IBQdescuentocartera.FieldByName('SALDO_ANTERIOR').AsCurrency;
+                     Capital := IBQdescuentocartera.FieldByName('CAPITAL').AsCurrency;
+                     Interes := IBQdescuentocartera.FieldByName('INTERES').AsCurrency;
+                     Seguro := IBQdescuentocartera.FieldByName('DESCUENTO').AsCurrency;
+                     SaldoSiguiente := IBQcartera.FieldByName('SALDO_SIGUIENTE').AsCurrency;
+             end
+             else
+             begin
+                     SaldoAnteriorCartera := 0;
+                     Capital := 0;
+                     Interes := 0;
+                     Seguro := 0;
+                     SaldoSiguiente := 0;
+             end;
 
              csc := csc + 1;
              CDSextracto.Insert;
@@ -554,16 +583,13 @@ begin
              CDSextractoVALOR_DESEMBOLSO.Value := IBQcartera.FieldByName('VALOR_DESEMBOLSO').AsCurrency;
              CDSextractoCUOTA_PERIODO.Value := Cuota;
              CDSextractoTOTAL_CUOTAS.Value := IBQcartera.FieldByName('PLAZO_COLOCACION').AsInteger div IBQcartera.FieldByname('AMORTIZA_INTERES').AsInteger;
-             CDSextractoSALDO_ANTERIOR.Value := IBQcartera.FieldByName('SALDO_ANTERIOR').AsCurrency;
+             CDSextractoSALDO_ANTERIOR.Value := SaldoAnteriorCartera;
              CDSextractoPAGOS.Value := 0;
-             CDSextractoCAPITAL.Value := IBQcartera.FieldByName('CAPITAL').AsCurrency;
-             CDSextractoINTERES.Value := IBQcartera.FieldByName('INTERES').AsCurrency;
-             CDSextractoSEGURO.Value := IBQcartera.FieldByName('DESCUENTO').AsCurrency;
-             CDSextractoSALDO_SIGUIENTE.Value := IBQcartera.FieldByName('SALDO_SIGUIENTE').AsCurrency;
-             if (CDSextractoSALDO_ANTERIOR.Value <> 0) or (CDSextractoSALDO_SIGUIENTE.Value <> 0) then
-                 CDSextracto.Post
-             else
-                 CDSextracto.Cancel;
+             CDSextractoCAPITAL.Value := Capital;
+             CDSextractoINTERES.Value := Interes;
+             CDSextractoSEGURO.Value :=  Seguro;
+             CDSextractoSALDO_SIGUIENTE.Value := SaldoSiguiente;
+             CDSextracto.Post;
 
              IBQcartera.Next;
         end;

@@ -1215,7 +1215,7 @@ begin
                        IBQauxiliar.ParamByName('TIPO_COMPROBANTE').AsInteger :=  14;
                        IBQauxiliar.ParamByName('ID_COMPROBANTE').AsInteger := ConsecLibranza;
                  end
-                 else
+                 else  if (IBQpersona.FieldByName('ID_TIPO_RELACION').AsInteger = 2) then
                  begin
                        CargoMesCapitalCaja := CargoMesCapitalCaja + Valor;
                        IBQauxiliar.ParamByName('TIPO_COMPROBANTE').AsInteger :=  15;

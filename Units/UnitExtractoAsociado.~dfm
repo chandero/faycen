@@ -1,8 +1,8 @@
 object frmExtractoAsociado: TfrmExtractoAsociado
-  Left = 106
-  Top = 150
+  Left = 169
+  Top = 23
   Width = 1100
-  Height = 451
+  Height = 529
   Caption = 'Extracto de Asociado'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -47,6 +47,109 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     Height = 13
     Caption = 'Final'
     Visible = False
+  end
+  object GroupBox4: TGroupBox
+    Left = 8
+    Top = 344
+    Width = 1057
+    Height = 41
+    Caption = 'Otros Valores'
+    TabOrder = 9
+    object Label13: TLabel
+      Left = 8
+      Top = 24
+      Width = 33
+      Height = 13
+      Caption = 'Sueldo'
+    end
+    object Label14: TLabel
+      Left = 232
+      Top = 24
+      Width = 41
+      Height = 13
+      Caption = 'Almac'#233'n'
+    end
+    object Label15: TLabel
+      Left = 448
+      Top = 24
+      Width = 42
+      Height = 13
+      Caption = 'Mercado'
+    end
+    object edSueldo: TJvCurrencyEdit
+      Left = 96
+      Top = 16
+      Width = 121
+      Height = 21
+      Alignment = taRightJustify
+      ReadOnly = True
+      TabOrder = 0
+      HasMaxValue = False
+      HasMinValue = False
+      ClipBoardCommands = [caCopy]
+    end
+    object edAlmacen: TJvCurrencyEdit
+      Left = 312
+      Top = 16
+      Width = 121
+      Height = 21
+      Alignment = taRightJustify
+      ReadOnly = True
+      TabOrder = 1
+      HasMaxValue = False
+      HasMinValue = False
+      ClipBoardCommands = [caCopy]
+    end
+    object edMercado: TJvCurrencyEdit
+      Left = 512
+      Top = 16
+      Width = 121
+      Height = 21
+      Alignment = taRightJustify
+      ReadOnly = True
+      TabOrder = 2
+      HasMaxValue = False
+      HasMinValue = False
+      ClipBoardCommands = [caCopy]
+    end
+  end
+  object GroupBox3: TGroupBox
+    Left = 584
+    Top = 0
+    Width = 481
+    Height = 73
+    Caption = 'Informaci'#243'n del Asociado'
+    TabOrder = 8
+    object Label11: TLabel
+      Left = 8
+      Top = 16
+      Width = 48
+      Height = 13
+      Caption = 'Direcci'#243'n:'
+    end
+    object Label12: TLabel
+      Left = 8
+      Top = 38
+      Width = 45
+      Height = 13
+      Caption = 'Tel'#233'fono:'
+    end
+    object edDireccion: TEdit
+      Left = 61
+      Top = 13
+      Width = 404
+      Height = 21
+      ReadOnly = True
+      TabOrder = 0
+    end
+    object edTelefono: TEdit
+      Left = 61
+      Top = 35
+      Width = 121
+      Height = 21
+      ReadOnly = True
+      TabOrder = 1
+    end
   end
   object GroupBox1: TGroupBox
     Left = 4
@@ -228,7 +331,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
   end
   object Panel1: TPanel
     Left = 0
-    Top = 388
+    Top = 466
     Width = 1092
     Height = 29
     Align = alBottom
@@ -638,8 +741,8 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     end
   end
   object edfechacorteini: TDateTimePicker
-    Left = 648
-    Top = 5
+    Left = 696
+    Top = 389
     Width = 105
     Height = 21
     CalAlignment = dtaLeft
@@ -653,8 +756,8 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     Visible = False
   end
   object edfechacortefin: TDateTimePicker
-    Left = 648
-    Top = 29
+    Left = 696
+    Top = 413
     Width = 105
     Height = 21
     CalAlignment = dtaLeft
@@ -668,8 +771,8 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     Visible = False
   end
   object edfechaini: TDateTimePicker
-    Left = 840
-    Top = 5
+    Left = 888
+    Top = 389
     Width = 105
     Height = 21
     CalAlignment = dtaLeft
@@ -683,8 +786,8 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     Visible = False
   end
   object edfechafin: TDateTimePicker
-    Left = 840
-    Top = 29
+    Left = 888
+    Top = 413
     Width = 105
     Height = 21
     CalAlignment = dtaLeft
@@ -696,109 +799,6 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     ParseInput = False
     TabOrder = 7
     Visible = False
-  end
-  object GroupBox3: TGroupBox
-    Left = 584
-    Top = 0
-    Width = 481
-    Height = 73
-    Caption = 'Informaci'#243'n del Asociado'
-    TabOrder = 8
-    object Label11: TLabel
-      Left = 8
-      Top = 16
-      Width = 48
-      Height = 13
-      Caption = 'Direcci'#243'n:'
-    end
-    object Label12: TLabel
-      Left = 8
-      Top = 38
-      Width = 45
-      Height = 13
-      Caption = 'Tel'#233'fono:'
-    end
-    object edDireccion: TEdit
-      Left = 61
-      Top = 13
-      Width = 404
-      Height = 21
-      ReadOnly = True
-      TabOrder = 0
-    end
-    object edTelefono: TEdit
-      Left = 61
-      Top = 35
-      Width = 121
-      Height = 21
-      ReadOnly = True
-      TabOrder = 1
-    end
-  end
-  object GroupBox4: TGroupBox
-    Left = 8
-    Top = 344
-    Width = 1057
-    Height = 41
-    Caption = 'Otros Valores'
-    TabOrder = 9
-    object Label13: TLabel
-      Left = 8
-      Top = 24
-      Width = 33
-      Height = 13
-      Caption = 'Sueldo'
-    end
-    object Label14: TLabel
-      Left = 232
-      Top = 24
-      Width = 41
-      Height = 13
-      Caption = 'Almac'#233'n'
-    end
-    object Label15: TLabel
-      Left = 448
-      Top = 24
-      Width = 42
-      Height = 13
-      Caption = 'Mercado'
-    end
-    object edSueldo: TJvCurrencyEdit
-      Left = 96
-      Top = 16
-      Width = 121
-      Height = 21
-      Alignment = taRightJustify
-      ReadOnly = True
-      TabOrder = 0
-      HasMaxValue = False
-      HasMinValue = False
-      ClipBoardCommands = [caCopy]
-    end
-    object edAlmacen: TJvCurrencyEdit
-      Left = 312
-      Top = 16
-      Width = 121
-      Height = 21
-      Alignment = taRightJustify
-      ReadOnly = True
-      TabOrder = 1
-      HasMaxValue = False
-      HasMinValue = False
-      ClipBoardCommands = [caCopy]
-    end
-    object edMercado: TJvCurrencyEdit
-      Left = 512
-      Top = 16
-      Width = 121
-      Height = 21
-      Alignment = taRightJustify
-      ReadOnly = True
-      TabOrder = 2
-      HasMaxValue = False
-      HasMinValue = False
-      ClipBoardCommands = [caCopy]
-    end
   end
   object DSasociado: TDataSource
     DataSet = IBQasociado
@@ -993,19 +993,10 @@ object frmExtractoAsociado: TfrmExtractoAsociado
       '  "c".VALOR_DESEMBOLSO,'
       '  "c".PLAZO_COLOCACION,'
       '  "c".AMORTIZA_INTERES,'
-      '  "d".SALDO AS SALDO_ANTERIOR,'
-      '  "d".CAPITAL,'
-      '  "d".INTERES,'
-      '  "d".DESCUENTO,'
-      '  ("d".SALDO - "d".CAPITAL) AS SALDO_SIGUIENTE,'
-      '  "d".FECHA_CORTE,'
       '  "l".DESCRIPCION_LINEA,'
       '  "p".DESCRIPCION'
       'FROM'
       ' "col$colocacion" "c"'
-      
-        ' INNER JOIN GEN$DESCUENTOCARTERA "d" ON ("c".ID_COLOCACION="d".I' +
-        'D_COLOCACION)'
       ' INNER JOIN "col$lineas" "l" ON ("c".ID_LINEA="l".ID_LINEA)'
       
         ' LEFT OUTER JOIN GEN$COLOCACIONPROVEEDOR "cp" ON ("c".ID_COLOCAC' +
@@ -1015,7 +1006,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
         'PROVEEDOR)'
       'WHERE'
       '  ("c".ID_PERSONA = :ID_PERSONA) AND '
-      '  ("d".FECHA_CORTE = :FECHA_CORTE) '
+      ' ("c".FECHA_DESEMBOLSO <= :FECHA_CORTE)'
       'ORDER BY'
       '  "l".ID_LINEA,'
       '  "c".ID_COLOCACION')
@@ -2684,8 +2675,82 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     Left = 264
     Top = 152
   end
-  object IBExtract1: TIBExtract
-    Left = 536
-    Top = 208
+  object IBQdescuentocartera: TIBQuery
+    SQL.Strings = (
+      'SELECT'
+      '  d.SALDO AS SALDO_ANTERIOR,'
+      '  d.CAPITAL,'
+      '  d.INTERES,'
+      '  d.DESCUENTO,'
+      '  (d.SALDO - d.CAPITAL) AS SALDO_SIGUIENTE,'
+      '  d.FECHA_CORTE'
+      'FROM'
+      ' GEN$DESCUENTOCARTERA d'
+      'WHERE'
+      ' d.ID_COLOCACION = :ID_COLOCACION'
+      'AND'
+      ' d.FECHA_CORTE = :FECHA_CORTE')
+    Left = 216
+    Top = 80
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_COLOCACION'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_CORTE'
+        ParamType = ptUnknown
+      end>
+  end
+  object IBQcarteraOLD: TIBQuery
+    SQL.Strings = (
+      'SELECT '
+      '  "c".ID_COLOCACION,'
+      '  "c".NOTA_CONTABLE,'
+      '  "c".FECHA_DESEMBOLSO,'
+      '  "c".VALOR_DESEMBOLSO,'
+      '  "c".PLAZO_COLOCACION,'
+      '  "c".AMORTIZA_INTERES,'
+      '  "d".SALDO AS SALDO_ANTERIOR,'
+      '  "d".CAPITAL,'
+      '  "d".INTERES,'
+      '  "d".DESCUENTO,'
+      '  ("d".SALDO - "d".CAPITAL) AS SALDO_SIGUIENTE,'
+      '  "d".FECHA_CORTE,'
+      '  "l".DESCRIPCION_LINEA,'
+      '  "p".DESCRIPCION'
+      'FROM'
+      ' "col$colocacion" "c"'
+      
+        ' LEFT JOIN GEN$DESCUENTOCARTERA "d" ON ("c".ID_COLOCACION="d".ID' +
+        '_COLOCACION) '
+      ' INNER JOIN "col$lineas" "l" ON ("c".ID_LINEA="l".ID_LINEA)'
+      
+        ' LEFT OUTER JOIN GEN$COLOCACIONPROVEEDOR "cp" ON ("c".ID_COLOCAC' +
+        'ION="cp".ID_COLOCACION)'
+      
+        ' LEFT OUTER JOIN GEN$PROVEEDOR "p" ON ("cp".ID_PROVEEDOR="p".ID_' +
+        'PROVEEDOR)'
+      'WHERE'
+      '  ("c".ID_PERSONA = :ID_PERSONA) AND '
+      ' ("c".FECHA_DESEMBOLSO <= :FECHA_CORTE)'
+      'ORDER BY'
+      '  "l".ID_LINEA,'
+      '  "c".ID_COLOCACION')
+    Left = 184
+    Top = 48
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_PERSONA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_CORTE'
+        ParamType = ptUnknown
+      end>
   end
 end

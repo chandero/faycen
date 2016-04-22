@@ -125,10 +125,10 @@ begin
               IBQuery3.sql.Add('where ');
               IBQuery3.sql.Add('"con$auxiliar".CODIGO =:"CODIGO" and');
               IBQuery3.SQL.Add('"con$auxiliar".ID_AGENCIA =:"ID_AGENCIA" and');
-              IBQuery3.sql.Add('"con$auxiliar".ESTADOAUX =:"ESTADOAUX"');
+              IBQuery3.sql.Add('"con$auxiliar".ESTADOAUX <>:"ESTADOAUX"');
               IBQuery3.ParamByName('CODIGO').AsString := codigo;
               IBQuery3.ParamByName('ID_AGENCIA').AsInteger := agencia;
-              IBQuery3.ParamByname('ESTADOAUX').AsString := 'C';
+              IBQuery3.ParamByname('ESTADOAUX').AsString := 'N';
               IBQuery3.open;
               while not ibquery3.Eof do
                 begin

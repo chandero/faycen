@@ -3,7 +3,7 @@ unit UnitGlobales;
 interface
 
 Uses Graphics, Forms, StdCtrls, DBCtrls, Math, DateUtils, IB, IBSQL ,IBQuery,IBStoredProc, IBDataBase, Messages,SysUtils,DB,DBGrids,Windows,Controls, StrUtils,Classes,Dialogs, winspool, Printers,
-     Unit_DmComprobante,JvStringGrid,DBClient, UnitdmGeneral;
+     Unit_DmComprobante,JvStringGrid,DBClient, UnitdmGeneral, UnitPantallaProgreso;
 
 type
      PTablaCerLiq = ^TablaCerLiq;
@@ -1316,7 +1316,9 @@ Codigomayor  : String;
 Debito       : Currency;
 Credito      : Currency;
 SaldoInicial : Currency;
+frmProgreso : TfrmProgreso;
 begin
+  frmProgreso := TfrmProgreso.Create(nil);
   DmComprobante := TDmComprobante.Create(Application);
   if DmComprobante.IBQuery1.Transaction.InTransaction then
      DmComprobante.IBQuery1.Transaction.Rollback;
@@ -1334,6 +1336,13 @@ begin
       ParamByName('ID_AGENCIA').AsInteger := Agencia;
       try
         Open;
+        Last;
+        First;
+        frmProgreso.Min := 0;
+        frmProgreso.Max := RecordCount;
+        frmProgreso.Position := 0;
+        frmProgreso.Titulo := 'Limpiando Saldos Anteriores...';
+        frmProgreso.Show;
         if RecordCount > 0 then
         begin
           DmComprobante.IBVarios.SQL.Clear;
@@ -1343,6 +1352,8 @@ begin
           DmComprobante.IBQuery2.SQL.Add('update "con$puc" SET SALDOINICIAL = 0 where');
           DmComprobante.IBQuery2.SQL.Add('"con$puc".ID_AGENCIA = :ID_AGENCIA and "con$puc".CODIGO = :CODIGO');
           while not eof do begin
+           frmProgreso.Position := RecNo;
+           Application.ProcessMessages;
            DmComprobante.IBVarios.Close;
            DmComprobante.IBVarios.ParamByName('ID_AGENCIA').AsInteger := FieldByName('ID_AGENCIA').AsInteger;
            DmComprobante.IBVarios.ParamByName('CODIGO').AsString := FieldByName('CODIGO').AsString;
@@ -1360,6 +1371,7 @@ begin
           Exit;
       end;
     end;
+    frmProgreso.Hide;
 
 
 
@@ -1375,56 +1387,20 @@ begin
       SQL.Add('Order by "con$puc".ID_AGENCIA,"con$puc".CODIGO');
       ParamByName('ID_AGENCIA').AsInteger := Agencia;
       Open;
+      Last;
+      First;
+        frmProgreso.Min := 0;
+        frmProgreso.Max := RecordCount;
+        frmProgreso.Position := 0;
+        frmProgreso.Titulo := 'Colocando Saldos a Mayores...';
+        frmProgreso.Show;
         while not Eof do
          begin
+           frmProgreso.Position := RecNo;
            Codigo := fieldbyname('CODIGO').AsString;
-           CodigoMayor := EvaluarCodigoMayor(Codigo);
-           if (CodigoMayor <> FieldByName('CODIGOMAYOR').AsString) then
-           begin
-               // Actualizar Codigo Mayor
-               DmComprobante.IBQuery3.Close;
-               DmComprobante.IBQuery3.SQL.Clear;
-               DmComprobante.IBQuery3.SQL.Add('UPDATE "con$puc" p SET p.CODIGOMAYOR = :CODIGOMAYOR WHERE p.CODIGO = :CODIGO');
-               DmComprobante.IBQuery3.ParamByName('CODIGOMAYOR').AsString := CodigoMayor;
-               DmComprobante.IBQuery3.ParamByName('CODIGO').AsString := Codigo;
-               DmComprobante.IBQuery3.ExecSQL;
-
-
-           end;
-               // Verificar si codigo mayor existe, de lo contrario crearlo
-
-               DmComprobante.IBQuery3.Close;
-               DmComprobante.IBQuery3.SQL.Clear;
-               DmComprobante.IBQuery3.SQL.Add('SELECT * FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
-               DmComprobante.IBQuery3.ParamByName('CODIGO').AsString := CodigoMayor;
-               DmComprobante.IBQuery3.Open;
-               if (DmComprobante.IBQuery3.RecordCount = 0) then
-               begin
-                   DmComprobante.IBQuery3.Close;
-                   DmComprobante.IBQuery3.SQL.Clear;
-                   DmComprobante.IBQuery3.SQL.Add('INSERT INTO "con$puc" VALUES(');
-                   DmComprobante.IBQuery3.SQL.Add(':"CODIGO", :"ID_AGENCIA", :"CLAVE", :"NOMBRE",');
-                   DmComprobante.IBQuery3.SQL.Add(':"TIPO", :"CODIGOMAYOR", :"MOVIMIENTO", :"NIVEL",');
-                   DmComprobante.IBQuery3.SQL.Add(':"ESBANCO", :"NATURALEZA", :"INFORME",');
-                   DmComprobante.IBQuery3.SQL.Add(':"CENTROCOSTO", :"SALDOINICIAL",:"ESCAPTACION",:"ESCOLOCACION")');
-                   DmComprobante.IBQuery3.ParamByName('CODIGO').AsString         := CodigoMayor;
-                   DmComprobante.IBQuery3.ParamByName('ID_AGENCIA').AsInteger    := agencia;
-                   DmComprobante.IBQuery3.ParamByName('CLAVE').AsString          := '00000';
-                   DmComprobante.IBQuery3.ParamByName('NOMBRE').AsString         := FieldByName('NOMBRE').AsString;
-                   DmComprobante.IBQuery3.ParamByName('TIPO').AsString           := '00';
-                   DmComprobante.IBQuery3.ParamByName('CODIGOMAYOR').AsString    := EvaluarCodigoMayor(CodigoMayor);
-                   DmComprobante.IBQuery3.ParamByName('MOVIMIENTO').AsInteger    := 0;
-                   DmComprobante.IBQuery3.ParamByName('NIVEL').AsInteger         := FieldByName('NIVEL').AsInteger - 1;
-                   DmComprobante.IBQuery3.ParamByName('ESBANCO').AsInteger       := 0;
-                   DmComprobante.IBQuery3.ParamByName('ESCAPTACION').AsInteger   := 0;
-                   DmComprobante.IBQuery3.ParamByName('ESCOLOCACION').AsInteger  := 0;
-                   DmComprobante.IBQuery3.ParamByName('NATURALEZA').AsString     := 'N';
-                   DmComprobante.IBQuery3.ParamByName('INFORME').AsString        := '0';
-                   DmComprobante.IBQuery3.ParamByName('CENTROCOSTO').AsString    := '0';
-                   DmComprobante.IBQuery3.ParamByName('SALDOINICIAL').AsCurrency := 0;
-                   DmComprobante.IBQuery3.ExecSQL;
-               end;
-           
+           Codigomayor := FieldByName('CODIGOMAYOR').AsString;
+           frmProgreso.Info.Caption := 'Código: ' + Codigo + ' - ' + FieldByName('NOMBRE').AsString;
+           Application.ProcessMessages;
            SaldoInicial := FieldByName('SALDOINICIAL').AsCurrency;
            with DmComprobante.IBQuery2 do
             begin
@@ -1461,6 +1437,7 @@ begin
           next;
          end;
       end;
+      frmProgreso.Free;
      Dmcomprobante.IBQuery1.Transaction.Commit;
      Result := True;
 

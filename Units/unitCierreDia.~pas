@@ -184,10 +184,6 @@ begin
         While not QueryCompcierre.Eof do
          begin
            id_comprobante := FieldByName('ID_COMPROBANTE').AsInteger;
-           if (id_comprobante = 139) then
-           begin
-               Application.ProcessMessages;
-           end;
            tipo := StrToInt(Trim(FieldByName('TIPO_COMPROBANTE').AsString));
            descripcion := FieldByName('DESCRIPCION').AsString;
            abreviatura := FieldByName('ABREVIATURA').AsString;
