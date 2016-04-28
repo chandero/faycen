@@ -468,7 +468,7 @@ begin
               movimientoanterior := 0;
             end;
 
-            saldoanterior := saldoinicial+ movimientoanterior;
+            saldoanterior := saldoinicial + movimientoanterior;
             if (IBQdeposito.FieldByName('ID_TIPO_CAPTACION').AsInteger = 1)
             then
             begin
@@ -515,7 +515,7 @@ begin
                CDSextractoSALDO_ANTERIOR.Value := saldoanterior;
                CDSextractoSALDO_SIGUIENTE.Value := saldo;
             end;
-            if ((saldoanterior <> 0) or (saldo <> 0)) then
+            if ((saldoanterior <> 0) or (saldo <> 0) ) then
                CDSextracto.Post;
 
             IBQdeposito.Next;
@@ -562,7 +562,7 @@ begin
                      Capital := IBQdescuentocartera.FieldByName('CAPITAL').AsCurrency;
                      Interes := IBQdescuentocartera.FieldByName('INTERES').AsCurrency;
                      Seguro := IBQdescuentocartera.FieldByName('DESCUENTO').AsCurrency;
-                     SaldoSiguiente := IBQcartera.FieldByName('SALDO_SIGUIENTE').AsCurrency;
+                     SaldoSiguiente := IBQdescuentocartera.FieldByName('SALDO_SIGUIENTE').AsCurrency;
              end
              else
              begin
@@ -589,16 +589,40 @@ begin
              CDSextractoINTERES.Value := Interes;
              CDSextractoSEGURO.Value :=  Seguro;
              CDSextractoSALDO_SIGUIENTE.Value := SaldoSiguiente;
-             CDSextracto.Post;
+
+             if (IBQcartera.FieldByName('FECHA_SALDADO').AsDateTime <> 0 ) and ( IBQcartera.FieldByName('FECHA_SALDADO').AsDateTime < fechainicial )
+             then
+              CDSextracto.Cancel
+             else
+              CDSextracto.Post;
 
              IBQcartera.Next;
         end;
 
+        // Procesar Cuentas x Cobrar y Otros
+
+        IBQcodigopuc.Close;
+        IBQcodigopuc.SQL.Clear;
+        IBQcodigopuc.SQL.Add('SELECT CODIGO FROM "col$codigospucbasicos"');
+        IBQcodigopuc.SQL.Add('WHERE ID_CODIGOPUCBASICO = 98');
+        IBQcodigopuc.Open;
+        codigocaja := IBQcodigopuc.FieldByName('CODIGO').AsString;
+
+
+
+        IBQcodigopuc.Close;
+        IBQcodigopuc.SQL.Clear;
+        IBQcodigopuc.SQL.Add('SELECT CODIGO FROM "col$codigospucbasicos"');
+        IBQcodigopuc.SQL.Add('WHERE ID_CODIGOPUCBASICO = 99');
+        IBQcodigopuc.Open;
+        codigonomina := IBQcodigopuc.FieldByName('CODIGO').AsString;
 
         // Procesar Abonos Mes
 
         IBQmovimiento.Close;
         IBQmovimiento.ParamByName('ID_PERSONA').AsString := EdNumeroIdentificacion.Text;
+        IBQmovimiento.ParamByName('CODIGO1').AsString := codigonomina;
+        IBQmovimiento.ParamByName('CODIGO2').AsString := codigocaja;
         IBQmovimiento.ParamByName('FECHA_INICIAL').AsDate := fechainicial;
         IBQmovimiento.ParamByName('FECHA_FINAL').AsDate := fechafinal;
         IBQmovimiento.Open;
@@ -608,7 +632,7 @@ begin
              csc := csc + 1;
              CDSextracto.Insert;
              CDSextractoCSC.Value := csc;
-             CDSextractoCBTE.Value := IBQmovimiento.FieldByName('ABREVIATURA').AsString + IBQmovimiento.FieldByName('COMPROBANTE').AsString;
+             CDSextractoCBTE.Value := IBQmovimiento.FieldByName('ABREVIATURA').AsString + IBQmovimiento.FieldByName('ID_COMPROBANTE').AsString;
              CDSextractoFECHA.Clear;
              CDSextractoCONCEPTO.Value := 'VR. DESCUENTO MES';
              CDSextractoID_COLOCACION.Clear;
@@ -631,23 +655,7 @@ begin
         cxc := 0;
         abonocxc := 0;
         cxc := 0;
-        // Procesar Cuentas x Cobrar y Otros
 
-        IBQcodigopuc.Close;
-        IBQcodigopuc.SQL.Clear;
-        IBQcodigopuc.SQL.Add('SELECT CODIGO FROM "col$codigospucbasicos"');
-        IBQcodigopuc.SQL.Add('WHERE ID_CODIGOPUCBASICO = 98');
-        IBQcodigopuc.Open;
-        codigocaja := IBQcodigopuc.FieldByName('CODIGO').AsString;
-
-
-
-        IBQcodigopuc.Close;
-        IBQcodigopuc.SQL.Clear;
-        IBQcodigopuc.SQL.Add('SELECT CODIGO FROM "col$codigospucbasicos"');
-        IBQcodigopuc.SQL.Add('WHERE ID_CODIGOPUCBASICO = 99');
-        IBQcodigopuc.Open;
-        codigonomina := IBQcodigopuc.FieldByName('CODIGO').AsString;
 
 
         IBQcargomes.Close;
@@ -686,11 +694,13 @@ begin
         begin
          IBQcargomes.Close;
          IBQcargomes.SQL.Clear;
-         IBQcargomes.SQL.Add('SELECT SUM(DEBITO - CREDITO) AS MOVIMIENTO FROM GEN$PERSONAMOVIMIENTO m');
-         IBQcargomes.SQL.Add(' WHERE m.ID_IDENTIFICACION = :ID_IDENTIFICACION and ');
+         IBQcargomes.SQL.Add('SELECT SUM(DEBITO - CREDITO) AS MOVIMIENTO FROM "con$auxiliar" m');
+         IBQcargomes.SQL.Add(' WHERE m.CODIGO IN (:CODIGO1, :CODIGO2) and m.ID_IDENTIFICACION = :ID_IDENTIFICACION and ');
          IBQcargomes.SQL.Add(' m.ID_PERSONA = :ID_PERSONA and m.FECHA BETWEEN :FECHA_INICIAL and :FECHA_FINAL');
          IBQcargomes.ParamByName('ID_IDENTIFICACION').AsInteger := 3;
          IBQcargomes.ParamByName('ID_PERSONA').AsString := EdNumeroIdentificacion.Text;
+         IBQcargomes.ParamByName('CODIGO1').AsString := codigonomina;
+         IBQcargomes.ParamByName('CODIGO2').AsString := codigocaja;
          IBQcargomes.ParamByName('FECHA_INICIAL').AsDate := fechainicialant;
          IBQcargomes.ParamByName('FECHA_FINAL').AsDate := fechafinalant;
          IBQcargomes.Open;
@@ -708,11 +718,13 @@ begin
         
         IBQcargomes.Close;
         IBQcargomes.SQL.Clear;
-        IBQcargomes.SQL.Add('SELECT SUM(DEBITO) AS DEBITO, SUM(CREDITO) AS CREDITO FROM GEN$PERSONAMOVIMIENTO m');
-        IBQcargomes.SQL.Add(' WHERE m.ID_IDENTIFICACION = :ID_IDENTIFICACION and ');
+        IBQcargomes.SQL.Add('SELECT SUM(DEBITO) AS DEBITO, SUM(CREDITO) AS CREDITO FROM "con$auxiliar" m');
+        IBQcargomes.SQL.Add(' WHERE m.CODIGO IN (:CODIGO1, :CODIGO2) and m.ID_IDENTIFICACION = :ID_IDENTIFICACION and ');
         IBQcargomes.SQL.Add(' m.ID_PERSONA = :ID_PERSONA and m.FECHA BETWEEN :FECHA_INICIAL and :FECHA_FINAL');
         IBQcargomes.ParamByName('ID_IDENTIFICACION').AsInteger := 3;
         IBQcargomes.ParamByName('ID_PERSONA').AsString := EdNumeroIdentificacion.Text;
+        IBQcargomes.ParamByName('CODIGO1').AsString := codigonomina;
+        IBQcargomes.ParamByName('CODIGO2').AsString := codigocaja;
         IBQcargomes.ParamByName('FECHA_INICIAL').AsDate := fechainicial;
         IBQcargomes.ParamByName('FECHA_FINAL').AsDate := fechafinal;
         IBQcargomes.Open;

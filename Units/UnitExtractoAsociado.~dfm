@@ -1,8 +1,8 @@
 object frmExtractoAsociado: TfrmExtractoAsociado
   Left = 169
-  Top = 23
+  Top = 66
   Width = 1100
-  Height = 529
+  Height = 510
   Caption = 'Extracto de Asociado'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -331,7 +331,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
   end
   object Panel1: TPanel
     Left = 0
-    Top = 466
+    Top = 447
     Width = 1092
     Height = 29
     Align = alBottom
@@ -993,6 +993,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
       '  "c".VALOR_DESEMBOLSO,'
       '  "c".PLAZO_COLOCACION,'
       '  "c".AMORTIZA_INTERES,'
+      '  "c".FECHA_SALDADO,'
       '  "l".DESCRIPCION_LINEA,'
       '  "p".DESCRIPCION'
       'FROM'
@@ -1045,18 +1046,30 @@ object frmExtractoAsociado: TfrmExtractoAsociado
     SQL.Strings = (
       'SELECT '
       't.ABREVIATURA, '
-      'm.COMPROBANTE, '
+      'm.ID_COMPROBANTE, '
       'm.FECHA, '
       'm.DEBITO,'
       'm.CREDITO '
-      'FROM GEN$PERSONAMOVIMIENTO m'
+      'FROM "con$auxiliar" m'
       'INNER JOIN "con$tipocomprobante" t ON t.ID = m.TIPO_COMPROBANTE'
-      'WHERE m.ID_PERSONA = :ID_PERSONA and'
+      
+        'WHERE m.CODIGO IN (:CODIGO1, :CODIGO2) and m.ID_PERSONA = :ID_PE' +
+        'RSONA and'
       'm.FECHA BETWEEN :FECHA_INICIAL and :FECHA_FINAL and'
       'm.CREDITO > 0')
     Left = 280
     Top = 48
     ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'CODIGO1'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'CODIGO2'
+        ParamType = ptUnknown
+      end
       item
         DataType = ftUnknown
         Name = 'ID_PERSONA'
