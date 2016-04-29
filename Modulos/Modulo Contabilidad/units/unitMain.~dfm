@@ -292,6 +292,16 @@ object frmMain: TfrmMain
           OnClick = CausacinInteresesdeDepositos1Click
         end
       end
+      object Comparativos1: TMenuItem
+        Caption = 'Comparativos'
+        object AportesyDepositos1: TMenuItem
+          Caption = 'Aportes y Depositos'
+          OnClick = AportesyDepositos1Click
+        end
+        object Cartera2: TMenuItem
+          Caption = 'Cartera'
+        end
+      end
       object N11: TMenuItem
         Caption = '-'
       end

@@ -132,7 +132,9 @@ uses
   UnitConsultaComprobantes in 'units\UnitConsultaComprobantes.pas' {frmConsultaComprobantes},
   UnitExtractoAsociado in '..\..\Units\UnitExtractoAsociado.pas' {frmExtractoAsociado},
   UnitAuxiliarTercero in 'units\UnitAuxiliarTercero.pas' {frmAuxiliarTercero},
-  UnitCausacionInteresesDepositos in '..\..\Units\UnitCausacionInteresesDepositos.pas' {frmCausacionInteresesDepositos};
+  UnitCausacionInteresesDepositos in '..\..\Units\UnitCausacionInteresesDepositos.pas' {frmCausacionInteresesDepositos},
+  UnitComparativoDepositos in 'units\UnitComparativoDepositos.pas' {frmComparativoDepositos},
+  DataSetToExcel in '\\vboxsrv\SGFT\Faycen\Units\DataSetToExcel.pas';
 
 {$R *.res}
 
@@ -140,5 +142,6 @@ begin
   Application.Initialize;
   Application.Title := 'Contabilidad';
   Application.CreateForm(TfrmMain, frmMain);
+  Application.CreateForm(TfrmComparativoDepositos, frmComparativoDepositos);
   Application.Run;
 end.

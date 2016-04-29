@@ -131,6 +131,9 @@ type
     AuxiliarTercero1: TMenuItem;
     N19: TMenuItem;
     CausacinInteresesdeDepositos1: TMenuItem;
+    Comparativos1: TMenuItem;
+    AportesyDepositos1: TMenuItem;
+    Cartera2: TMenuItem;
     procedure Configurar_ImpresoraExecute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -214,6 +217,7 @@ type
     procedure ExtractoAsociado1Click(Sender: TObject);
     procedure AuxiliarTercero1Click(Sender: TObject);
     procedure CausacinInteresesdeDepositos1Click(Sender: TObject);
+    procedure AportesyDepositos1Click(Sender: TObject);
   private
     { Private declarations }
     SalirMal:Boolean;
@@ -1050,6 +1054,14 @@ var
 begin
         frmCausacionInteresesDepositos := TfrmCausacionInteresesDepositos.Create(self);
         frmCausacionInteresesDepositos.ShowModal;
+end;
+
+procedure TfrmMain.AportesyDepositos1Click(Sender: TObject);
+var
+   frmComparativoDepositos: TfrmComparativoDepositos;
+begin
+        frmComparativoDepositos := TfrmComparativoDepositos.Create(self);
+        frmComparativoDepositos.ShowModal;
 end;
 
 end.
