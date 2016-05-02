@@ -1,6 +1,6 @@
 object frmComparativoDepositos: TfrmComparativoDepositos
-  Left = 526
-  Top = 113
+  Left = 362
+  Top = 31
   Width = 719
   Height = 592
   Caption = 'Comparativo Contabilidad Depositos'
@@ -41,6 +41,9 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       Top = 5
       Width = 199
       Height = 21
+      KeyField = 'ID_TIPO_CAPTACION'
+      ListField = 'DESCRIPCION'
+      ListSource = DSproducto
       TabOrder = 0
     end
     object CBMeses: TComboBox
@@ -51,6 +54,7 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       ItemHeight = 13
       TabOrder = 1
       Text = 'Seleccione el Mes'
+      OnSelect = CBMesesSelect
       Items.Strings = (
         'Enero'
         'Febrero'
@@ -71,7 +75,9 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       Width = 75
       Height = 25
       Caption = '&Procesar'
+      Enabled = False
       TabOrder = 2
+      OnClick = cmdProcesarClick
       Glyph.Data = {
         36050000424D3605000000000000360400002800000010000000100000000100
         08000000000000010000D30E0000D30E000000010000000100004A7BB500296B
@@ -246,32 +252,68 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       item
         Expanded = False
         FieldName = 'ID_PERSONA'
-        Width = 113
+        Width = 80
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'NOMBRE'
-        Width = 297
+        Width = 242
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'MODALIDAD'
+        Width = 126
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DEPOSITO'
-        Width = 129
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CONTABLE'
-        Width = 122
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DIFERENCIA'
         Visible = True
       end>
   end
   object CDSdatos: TClientDataSet
     Active = True
     Aggregates = <>
+    FieldDefs = <
+      item
+        Name = 'ID_PERSONA'
+        DataType = ftString
+        Size = 50
+      end
+      item
+        Name = 'NOMBRE'
+        DataType = ftString
+        Size = 200
+      end
+      item
+        Name = 'MODALIDAD'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'DEPOSITO'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'CONTABLE'
+        DataType = ftCurrency
+      end>
+    IndexDefs = <>
     Params = <>
+    StoreDefs = True
+    OnCalcFields = CDSdatosCalcFields
     Left = 112
     Top = 104
     Data = {
@@ -304,6 +346,11 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       DisplayWidth = 12
       FieldName = 'CONTABLE'
     end
+    object CDSdatosDIFERENCIA: TCurrencyField
+      FieldKind = fkCalculated
+      FieldName = 'DIFERENCIA'
+      Calculated = True
+    end
   end
   object DSdatos: TDataSource
     DataSet = CDSdatos
@@ -316,8 +363,133 @@ object frmComparativoDepositos: TfrmComparativoDepositos
     Left = 208
     Top = 8
   end
-  object DataSource1: TDataSource
+  object DSproducto: TDataSource
+    DataSet = IBQproducto
     Left = 184
     Top = 8
+  end
+  object SD1: TSaveDialog
+    Left = 104
+    Top = 528
+  end
+  object IBQpersona: TIBQuery
+    SQL.Strings = (
+      'SELECT '
+      'p.ID_IDENTIFICACION, '
+      'p.ID_PERSONA, '
+      
+        'p.NOMBRE || '#39' '#39' || p.PRIMER_APELLIDO || '#39' '#39' || p.SEGUNDO_APELLID' +
+        'O  AS NOMBRE,'
+      't.CODIGO_CONTABLE,'
+      'mt.ID_AGENCIA,'
+      'mt.ID_TIPO_CAPTACION,'
+      'mt.NUMERO_CUENTA,'
+      'mt.DIGITO_CUENTA'
+      'FROM "cap$maestrotitular" mt'
+      
+        'INNER JOIN "gen$persona" p ON p.ID_IDENTIFICACION = mt.ID_IDENTI' +
+        'FICACION and p.ID_PERSONA = mt.ID_PERSONA'
+      
+        'INNER JOIN "cap$tipocaptacion" t ON t.ID_TIPO_CAPTACION = mt.ID_' +
+        'TIPO_CAPTACION'
+      'WHERE mt.ID_TIPO_CAPTACION = :ID_TIPO_CAPTACION'
+      'ORDER BY p.ID_IDENTIFICACION, p.ID_PERSONA')
+    Left = 224
+    Top = 104
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_TIPO_CAPTACION'
+        ParamType = ptUnknown
+      end>
+  end
+  object IBQdeposito: TIBQuery
+    SQL.Strings = (
+      'SELECT SALDO_ACTUAL FROM SALDO_ACTUAL('
+      ':ID_AGENCIA,'
+      ':ID_TIPO_CAPTACION, '
+      ':NUMERO_CUENTA, '
+      ':DIGITO_CUENTA,'
+      ':ANHO, '
+      ':FECHA_INICIAL,'
+      ':FECHA_FINAL'
+      ')')
+    Left = 288
+    Top = 104
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_AGENCIA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'ID_TIPO_CAPTACION'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'NUMERO_CUENTA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'DIGITO_CUENTA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'ANHO'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_INICIAL'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_FINAL'
+        ParamType = ptUnknown
+      end>
+  end
+  object IBQauxiliar: TIBQuery
+    SQL.Strings = (
+      
+        'SELECT SALDO_ACTUAL FROM SALDO_AUXILIAR(:ID_IDENTIFICACION,:ID_P' +
+        'ERSONA,:CODIGO,:ANHO, :FECHA_INICIAL, :FECHA_FINAL)')
+    Left = 320
+    Top = 104
+    ParamData = <
+      item
+        DataType = ftUnknown
+        Name = 'ID_IDENTIFICACION'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'ID_PERSONA'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'CODIGO'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'ANHO'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_INICIAL'
+        ParamType = ptUnknown
+      end
+      item
+        DataType = ftUnknown
+        Name = 'FECHA_FINAL'
+        ParamType = ptUnknown
+      end>
   end
 end

@@ -258,7 +258,8 @@ uses unitLogin, IniFiles,
      UnitGestionTercero, UnitMantenimientoDescuentos, UnitCausacionCarterayOtros, UnitAplicarDescuentosLibranza,
      UnitInformacion, UnitDesembolso, UnitVisarDesembolso, UnitRecuperadesembolso,
      UnitCalculoCuotadePrueba, UnitRecaudoCuotaProyectada, UnitMantenimientoProveedores, UnitConsultaComprobantes,
-     UnitExtractoAsociado, UnitAuxiliarTercero, UnitCausacionInteresesDepositos;
+     UnitExtractoAsociado, UnitAuxiliarTercero, UnitCausacionInteresesDepositos,
+     UnitComparativoDepositos;
 
 procedure TfrmMain.Configurar_ImpresoraExecute(Sender: TObject);
 begin
@@ -1026,7 +1027,7 @@ end;
 
 procedure TfrmMain.ConsultadeComprobantes1Click(Sender: TObject);
 var
-   frmConsultaComprobates : TfrmConsultaComprobantes;
+   frmConsultaComprobantes : TfrmConsultaComprobantes;
 begin
         frmConsultaComprobantes := TfrmConsultaComprobantes.Create(self);
         frmConsultaComprobantes.ShowModal;

@@ -243,7 +243,7 @@ begin
              Application.ProcessMessages;
              IBQpuc.Next;
         end;
-        IBQpuc.Transaction.Commit;
+
 
           CDSdata.First;
 
@@ -273,7 +273,7 @@ begin
         with IBQtmp do begin
          Close;
          SQL.Clear;
-         SQL.Add('SELECT NOMBRE FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
+         SQL.Add('SELECT NOMBRE, MOVIMIENTO FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
          ParamByName('CODIGO').AsString := CodigoInicial;
          Open;
          if RecordCount > 0 then
@@ -292,7 +292,7 @@ begin
         with IBQtmp do begin
          Close;
          SQL.Clear;
-         SQL.Add('SELECT NOMBRE FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
+         SQL.Add('SELECT NOMBRE, MOVIMIENTO FROM "con$puc" p WHERE p.CODIGO = :CODIGO');
          ParamByName('CODIGO').AsString := CodigoFinal;
          Open;
          if RecordCount > 0 then
@@ -336,14 +336,15 @@ end;
 
 procedure TfrmAuxiliarTercero.btnCerrarClick(Sender: TObject);
 begin
-        dmGeneral.Free;
         Close;
 end;
 
 procedure TfrmAuxiliarTercero.btnNuevoClick(Sender: TObject);
 begin
         if (IBQpuc.Transaction.InTransaction) then
+        begin
             IBQpuc.Transaction.Commit;
+        end;
         IBQpuc.Transaction.StartTransaction;
         btnProcesar.Enabled := True;
 end;
