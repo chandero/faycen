@@ -134,7 +134,8 @@ uses
   UnitAuxiliarTercero in 'units\UnitAuxiliarTercero.pas' {frmAuxiliarTercero},
   UnitCausacionInteresesDepositos in '..\..\Units\UnitCausacionInteresesDepositos.pas' {frmCausacionInteresesDepositos},
   UnitComparativoDepositos in 'units\UnitComparativoDepositos.pas' {frmComparativoDepositos},
-  DataSetToExcel in '\\vboxsrv\SGFT\Faycen\Units\DataSetToExcel.pas';
+  DataSetToExcel in '\\vboxsrv\SGFT\Faycen\Units\DataSetToExcel.pas',
+  UnitComparativoCartera in 'units\UnitComparativoCartera.pas' {frmComparativoCartera};
 
 {$R *.res}
 
@@ -142,6 +143,5 @@ begin
   Application.Initialize;
   Application.Title := 'Contabilidad';
   Application.CreateForm(TfrmMain, frmMain);
-  Application.CreateForm(TfrmComparativoDepositos, frmComparativoDepositos);
   Application.Run;
 end.

@@ -39,7 +39,7 @@ object frmCreacionCaptacion: TfrmCreacionCaptacion
       Top = 15
       Width = 525
       Height = 403
-      ActivePage = TabAportacion
+      ActivePage = TabAlaVista
       Align = alClient
       TabOrder = 0
       TabStop = False
@@ -4690,5 +4690,9 @@ object frmCreacionCaptacion: TfrmCreacionCaptacion
   object IBSQL3: TIBSQL
     Left = 280
     Top = 312
+  end
+  object IBQforma: TIBQuery
+    Left = 368
+    Top = 16
   end
 end

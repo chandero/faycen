@@ -1,6 +1,6 @@
 object frmComparativoDepositos: TfrmComparativoDepositos
-  Left = 362
-  Top = 31
+  Left = 463
+  Top = 10
   Width = 719
   Height = 592
   Caption = 'Comparativo Contabilidad Depositos'
@@ -41,9 +41,12 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       Top = 5
       Width = 199
       Height = 21
+      Hint = 'En blanco para todos los productos'
       KeyField = 'ID_TIPO_CAPTACION'
       ListField = 'DESCRIPCION'
       ListSource = DSproducto
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
     end
     object CBMeses: TComboBox
@@ -248,6 +251,7 @@ object frmComparativoDepositos: TfrmComparativoDepositos
     TitleFont.Height = -11
     TitleFont.Name = 'MS Sans Serif'
     TitleFont.Style = []
+    OnTitleClick = DBGdatosTitleClick
     Columns = <
       item
         Expanded = False
@@ -310,7 +314,19 @@ object frmComparativoDepositos: TfrmComparativoDepositos
         Name = 'CONTABLE'
         DataType = ftCurrency
       end>
-    IndexDefs = <>
+    IndexDefs = <
+      item
+        Name = 'IndexID_PERSONA'
+        Fields = 'ID_PERSONA'
+      end
+      item
+        Name = 'IndexNOMBRE'
+        Fields = 'NOMBRE'
+      end
+      item
+        Name = 'IndexMODALIDAD'
+        Fields = 'MODALIDAD'
+      end>
     Params = <>
     StoreDefs = True
     OnCalcFields = CDSdatosCalcFields
@@ -384,7 +400,8 @@ object frmComparativoDepositos: TfrmComparativoDepositos
       'mt.ID_AGENCIA,'
       'mt.ID_TIPO_CAPTACION,'
       'mt.NUMERO_CUENTA,'
-      'mt.DIGITO_CUENTA'
+      'mt.DIGITO_CUENTA,'
+      't.DESCRIPCION AS MODALIDAD'
       'FROM "cap$maestrotitular" mt'
       
         'INNER JOIN "gen$persona" p ON p.ID_IDENTIFICACION = mt.ID_IDENTI' +

@@ -11,28 +11,28 @@ type
   TfrmComparativoDepositos = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
-    DBLCBproducto: TDBLookupComboBox;
     Label2: TLabel;
+    DBLCBproducto: TDBLookupComboBox;
     CBMeses: TComboBox;
     cmdProcesar: TBitBtn;
     Panel2: TPanel;
     cmdCerrar: TBitBtn;
+    btnAExcel: TBitBtn;
     DBGdatos: TDBGrid;
     CDSdatos: TClientDataSet;
-    DSdatos: TDataSource;
-    btnAExcel: TBitBtn;
-    IBQproducto: TIBQuery;
-    DSproducto: TDataSource;
     CDSdatosID_PERSONA: TStringField;
     CDSdatosNOMBRE: TStringField;
+    CDSdatosMODALIDAD: TStringField;
     CDSdatosDEPOSITO: TCurrencyField;
     CDSdatosCONTABLE: TCurrencyField;
-    CDSdatosMODALIDAD: TStringField;
+    CDSdatosDIFERENCIA: TCurrencyField;
+    DSdatos: TDataSource;
+    IBQproducto: TIBQuery;
+    DSproducto: TDataSource;
     SD1: TSaveDialog;
     IBQpersona: TIBQuery;
     IBQdeposito: TIBQuery;
     IBQauxiliar: TIBQuery;
-    CDSdatosDIFERENCIA: TCurrencyField;
     procedure cmdCerrarClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnAExcelClick(Sender: TObject);
@@ -40,6 +40,7 @@ type
     procedure cmdProcesarClick(Sender: TObject);
     procedure CDSdatosCalcFields(DataSet: TDataSet);
     procedure CBMesesSelect(Sender: TObject);
+    procedure DBGdatosTitleClick(Column: TColumn);
   private
     { Private declarations }
   public
@@ -97,6 +98,10 @@ begin
 
 
         IBQproducto.Open;
+        IBQproducto.Last;
+        IBQproducto.First;
+
+        DBLCBproducto.KeyValue := -1;
 end;
 
 procedure TfrmComparativoDepositos.cmdProcesarClick(Sender: TObject);
@@ -113,11 +118,33 @@ begin
         TryEncodeDate(Anho,01,01, FechaInicial);
         TryEncodeDate(Anho,Mes, DaysInAMonth(Anho, Mes), FechaFinal);
 
-        IBQpersona.ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQproducto.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+        IBQpersona.Close;
+        IBQpersona.SQL.Clear;
+        IBQpersona.SQL.Add('SELECT');
+        IBQpersona.SQL.Add('mt.ID_IDENTIFICACION,');
+        IBQpersona.SQL.Add('mt.ID_PERSONA,');
+        IBQpersona.SQL.Add('p.NOMBRE || '' '' || p.PRIMER_APELLIDO || '' '' || p.SEGUNDO_APELLIDO  AS NOMBRE,');
+        IBQpersona.SQL.Add('t.CODIGO_CONTABLE,');
+        IBQpersona.SQL.Add('mt.ID_AGENCIA,');
+        IBQpersona.SQL.Add('mt.ID_TIPO_CAPTACION,');
+        IBQpersona.SQL.Add('mt.NUMERO_CUENTA,');
+        IBQpersona.SQL.Add('mt.DIGITO_CUENTA,');
+        IBQpersona.SQL.Add('t.DESCRIPCION AS MODALIDAD');
+        IBQpersona.SQL.Add('FROM "cap$maestrotitular" mt');
+        IBQpersona.SQL.Add('INNER JOIN "gen$persona" p ON p.ID_IDENTIFICACION = mt.ID_IDENTIFICACION and p.ID_PERSONA = mt.ID_PERSONA');
+        IBQpersona.SQL.Add('INNER JOIN "cap$tipocaptacion" t ON t.ID_TIPO_CAPTACION = mt.ID_TIPO_CAPTACION');
+        if (DBLCBproducto.KeyValue > 0) then
+        begin
+                IBQpersona.SQL.Add('WHERE mt.ID_TIPO_CAPTACION = :ID_TIPO_CAPTACION');
+                IBQpersona.ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQproducto.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+        end;
+        IBQpersona.SQL.Add('ORDER BY mt.ID_TIPO_CAPTACION, p.ID_IDENTIFICACION, p.ID_PERSONA');
         IBQpersona.Open;
         CDSdatos.Open;
         CDSdatos.EmptyDataSet;
         while not IBQpersona.Eof do begin
+
+            Application.ProcessMessages;
             // buscar saldos de la persona
             IBQdeposito.Close;
             IBQdeposito.ParamByName('ID_AGENCIA').AsInteger := IBQpersona.FieldByName('ID_AGENCIA').AsInteger;
@@ -142,6 +169,7 @@ begin
             CDSdatos.Insert;
             CDSdatosID_PERSONA.Value := IBQpersona.FieldByName('ID_PERSONA').AsString;
             CDSdatosNOMBRE.Value := IBQpersona.FieldByName('NOMBRE').AsString;
+            CDSdatosMODALIDAD.Value := IBQpersona.FieldByName('MODALIDAD').AsString;
             CDSdatosDEPOSITO.Value := Abs(IBQdeposito.FieldByName('SALDO_ACTUAL').AsCurrency);
             CDSdatosCONTABLE.Value := Abs(IBQauxiliar.FieldByName('SALDO_ACTUAL').AsCurrency);
             CDSdatos.Post;
@@ -159,6 +187,15 @@ end;
 procedure TfrmComparativoDepositos.CBMesesSelect(Sender: TObject);
 begin
         if cbmeses.ItemIndex > -1 then cmdProcesar.Enabled := True;
+end;
+
+procedure TfrmComparativoDepositos.DBGdatosTitleClick(Column: TColumn);
+begin
+        case Column.Index of
+        0: CDSdatos.IndexName := 'IndexID_PERSONA';
+        1: CDSdatos.IndexName := 'IndexNOMBRE';
+        2: CDSdatos.IndexName := 'IndexMODALIDAD';
+        end;
 end;
 
 end.

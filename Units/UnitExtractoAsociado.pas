@@ -93,12 +93,12 @@ type
     IBQgenminimos: TIBQuery;
     Label16: TLabel;
     edCuenta: TEdit;
-    prTxReport1: TprTxReport;
     IBQproceso: TIBQuery;
     IBQrevalorizacion: TIBQuery;
     IBQrevalorizacionmov: TIBQuery;
     IBQdescuentocartera: TIBQuery;
     IBQcarteraOLD: TIBQuery;
+    prTxReport1: TprTxReport;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnBuscarClick(Sender: TObject);

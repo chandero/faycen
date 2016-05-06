@@ -218,6 +218,7 @@ type
     procedure AuxiliarTercero1Click(Sender: TObject);
     procedure CausacinInteresesdeDepositos1Click(Sender: TObject);
     procedure AportesyDepositos1Click(Sender: TObject);
+    procedure Cartera2Click(Sender: TObject);
   private
     { Private declarations }
     SalirMal:Boolean;
@@ -259,7 +260,7 @@ uses unitLogin, IniFiles,
      UnitInformacion, UnitDesembolso, UnitVisarDesembolso, UnitRecuperadesembolso,
      UnitCalculoCuotadePrueba, UnitRecaudoCuotaProyectada, UnitMantenimientoProveedores, UnitConsultaComprobantes,
      UnitExtractoAsociado, UnitAuxiliarTercero, UnitCausacionInteresesDepositos,
-     UnitComparativoDepositos;
+     UnitComparativoDepositos, UnitComparativoCartera;
 
 procedure TfrmMain.Configurar_ImpresoraExecute(Sender: TObject);
 begin
@@ -1063,6 +1064,14 @@ var
 begin
         frmComparativoDepositos := TfrmComparativoDepositos.Create(self);
         frmComparativoDepositos.ShowModal;
+end;
+
+procedure TfrmMain.Cartera2Click(Sender: TObject);
+var
+    frmComparativoCartera: TfrmComparativoCartera;
+begin
+        frmComparativoCartera := TfrmComparativoCartera.Create(self);
+        frmComparativoCartera.Show;
 end;
 
 end.

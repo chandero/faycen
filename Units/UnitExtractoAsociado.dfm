@@ -1056,7 +1056,8 @@ object frmExtractoAsociado: TfrmExtractoAsociado
         'WHERE m.CODIGO IN (:CODIGO1, :CODIGO2) and m.ID_PERSONA = :ID_PE' +
         'RSONA and'
       'm.FECHA BETWEEN :FECHA_INICIAL and :FECHA_FINAL and'
-      'm.CREDITO > 0')
+      'm.CREDITO > 0'
+      'and m.ESTADOAUX <> '#39'N'#39)
     Left = 280
     Top = 48
     ParamData = <
@@ -1941,7 +1942,7 @@ object frmExtractoAsociado: TfrmExtractoAsociado
               DeleteEmptyLines = False
               CanResizeX = False
               CanResizeY = False
-              hAlign = prhCenter
+              hAlign = prhLeft
               vAlign = prvTop
               DefaultFont = False
               WordWrap = False

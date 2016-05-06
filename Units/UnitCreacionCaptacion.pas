@@ -210,6 +210,7 @@ type
     DSBancos: TDataSource;
     IBSQL3: TIBSQL;
     EdNumeroAportacion: TJvIntegerEdit;
+    IBQforma: TIBQuery;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure CmdCerrarClick(Sender: TObject);
@@ -320,6 +321,8 @@ begin
         dmCaptacion.IBTiposCaptacionCon.Database := dmGeneral.IBDatabase1;
         dmCaptacion.IBTiposCaptacionF.Database := dmGeneral.IBDatabase1;
 
+
+
         dmCaptacion.IBTiposCaptacion.Transaction := dmGeneral.IBTransaction1;
         dmCaptacion.IBTiposIdentificacion.Transaction := dmGeneral.IBTransaction1;
         dmCaptacion.IBConsulta.Transaction := dmGeneral.IBTransaction1;
@@ -344,6 +347,7 @@ begin
         IBSQL3.Database := dmGeneral.IBDatabase1;
         IBDComprobante.Database := dmGeneral.IBDatabase1;
         IBDAuxiliar.Database := dmGeneral.IBDatabase1;
+        IBQforma.Database := dmGeneral.IBDatabase1;
 
         IBSQL1.Transaction := dmGeneral.IBTransaction1;
         IBAuxiliar.Transaction := dmGeneral.IBTransaction1;
@@ -353,6 +357,7 @@ begin
         IBSQL3.Transaction := dmGeneral.IBTransaction1;
         IBDComprobante.Transaction := dmGeneral.IBTransaction1;
         IBDAuxiliar.Transaction := dmGeneral.IBTransaction1;
+        IBQforma.Transaction := dmGeneral.IBTransaction1;
 end;
 
 procedure TfrmCreacionCaptacion.FormClose(Sender: TObject;
@@ -401,6 +406,7 @@ begin
         GroupCaptacion.Visible := false;
         Panel1.Enabled := True;
         DBLCBTiposCaptacion.SetFocus;
+        DBLCBTiposCaptacion.KeyValue := 2;
         ComboParentescoAho.Items.Clear;
         try
            MyListAho := TList.Create;
@@ -816,15 +822,12 @@ var i,Consecutivo:Integer;
     ARecord:PMyListAho;
     TipoCaptacion:Integer;
 begin
-         if (not chkSubCuenta.Checked and DBLCBTiposCaptacion.KeyValue = 2) then
-         begin
-           if ValidarAportacion then
-           begin
-              MessageDlg('Cuenta con Aportes Vigentes',mtError,[mbcancel],0);
-              Result := False;
-              Exit;
-           end;
-         end;
+//           if ValidarAportacion then
+//           begin
+//              MessageDlg('Cuenta con Aportes Vigentes',mtError,[mbcancel],0);
+//              Result := False;
+//              Exit;
+//           end;
          if MyListAho.Count = 0 then
          begin
             MessageDlg('Debe incluir por lo menos un titular',mtError,[mbCancel],0);
@@ -832,47 +835,12 @@ begin
          end;
 // Obtener Consecutivo
          TipoCaptacion := DBLCBTiposCaptacion.KeyValue;
-         Consecutivo := ObtenerCaptacion(TipoCaptacion,IBSQL1);
-{         with dmCaptacion.IBSQL1 do
-         begin
-                Close;
-                SQL.Clear;
-                SQL.Add('select CONSECUTIVO from "cap$tipocaptacion" where ');
-                SQL.Add(' ID_TIPO_CAPTACION = :"ID" ');
-                ParamByName('ID').AsInteger := DBLCBTiposCaptacion.KeyValue;
-                try
-                  ExecQuery;
-                except
-                 begin
-                   Result := False;
-                   Abort;
-                 end;
-                end;
-                if RecordCount > 0 then
-                   Consecutivo := FieldByName('CONSECUTIVO').AsInteger
-                else
-                begin
-                   Result := False;
-                   Abort;
-                end;
-                Consecutivo := Consecutivo + 1;
-                Close;
-                SQL.Clear;
-                SQL.Add('UPDATE "cap$tipocaptacion" ');
-                SQL.Add('SET CONSECUTIVO = :"CONSECUTIVO" where ');
-                SQL.Add('ID_TIPO_CAPTACION = :"ID"');
-                ParamByName('CONSECUTIVO').AsInteger := Consecutivo;
-                ParamByName('ID').AsInteger := DBLCBTiposCaptacion.KeyValue;
-                try
-                  ExecQuery;
-                except
-                  begin
-                   Result := False;
-                   Abort;
-                  end;
-                end;
-                Transaction.CommitRetaining;
-         end;}
+         Consecutivo := ObtenerCaptacion(1,IBSQL1);
+
+         IBQforma.Close;
+         IBQforma.SQL.Clear;
+         IBQforma.SQL.Add('SELECT * FROM "cap$tiposcaptacion" ORDER BY ID_TIPO_CAPTACION ASC');
+         IBQforma.Open;
 
          EdNumeroAho.Caption := FormatFloat('0000000',Consecutivo);
          EdNumeroAportacion.Value := Consecutivo;
@@ -880,6 +848,11 @@ begin
          EdDigitoAportacion.Caption := DigitoControl(1,FormatFloat('0000000',Consecutivo));
          EdFechaAperApo.Date := EdFechaAperturaAho.Date;
          dmCaptacion.IBGrabar.Transaction.StartTransaction;
+
+         while not IBQforma.Eof do
+         begin
+
+
 // Tenemos que actualizar el insert del cap$maestro aquí.
          with dmCaptacion.IBGrabar do
          begin
@@ -891,22 +864,13 @@ begin
                 SQL.Add('values (:"ID_AGENCIA",:"ID_TIPO_CAPTACION",:"NUMERO_CUENTA",:"DIGITO_CUENTA",');
                 SQL.Add(':"VALOR_INICIAL",:"ID_FORMA",:"FECHA_APERTURA",:"TIPO_INTERES",:"ID_INTERES",:"CUOTA",:"ID_PLAN",:"ID_ESTADO",:"FIRMAS",:"SELLOS",:"PROTECTOGRAFOS")');
                 ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                ParamByName('ID_TIPO_CAPTACION').AsInteger := TipoCaptacion;
-                ParamByName('NUMERO_CUENTA').AsInteger := StrToInt(EdNumeroAho.Caption);
-                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(TipoCaptacion,EdNumeroAho.Caption));
+                ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+                ParamByName('NUMERO_CUENTA').AsInteger := Consecutivo;
+                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger,EdNumeroAho.Caption));
                 ParamByName('VALOR_INICIAL').AsCurrency := 0;
-                with dmCaptacion.IBSQL1 do
-                begin
-                    Close;
-                    SQL.Clear;
-                    SQL.Add('select ID_FORMA from "cap$tipocaptacion" where ');
-                    SQL.Add(' ID_TIPO_CAPTACION = :"ID"');
-                    ParamByName('ID').AsInteger := TipoCaptacion;
-                    ExecQuery;
-                end;
-                ParamByName('ID_FORMA').AsInteger := dmCaptacion.IBSQL1.FieldByName('ID_FORMA').AsInteger;
-                dmCaptacion.IBSQL1.Close;
-                ParamByName('FECHA_APERTURA').AsDate := EdFechaAperturaAho.Date;
+
+                ParamByName('ID_FORMA').AsInteger := IBQforma.FieldByName('ID_FORMA').AsInteger;
+                 ParamByName('FECHA_APERTURA').AsDate := EdFechaAperturaAho.Date;
                 ParamByName('TIPO_INTERES').AsString := 'F';
                 ParamByName('ID_INTERES').AsInteger := 0;
                 ParamByName('CUOTA').AsCurrency := 0;
@@ -931,9 +895,9 @@ begin
                 SQL.Add(':"ID_AGENCIA",:"ID_TIPO_CAPTACION",:"NUMERO_CUENTA",:"DIGITO_CUENTA",');
                 SQL.Add(':"ID_IDENTIFICACION",:"ID_PERSONA",:"NUMERO_TITULAR",:"TIPO_TITULAR")');
                 ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                ParamByName('ID_TIPO_CAPTACION').AsInteger := TipoCaptacion;
-                ParamByName('NUMERO_CUENTA').AsInteger := StrToInt(EdNumeroAho.Caption);
-                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(TipoCaptacion,EdNumeroAho.Caption));
+                ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+                ParamByName('NUMERO_CUENTA').AsInteger := Consecutivo;
+                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger,EdNumeroAho.Caption));
                 for i := 0 to MyListAho.Count - 1 do
                 begin
                  ARecord := MyListAho.Items[i];
@@ -961,9 +925,9 @@ begin
                 SQL.Add(':"ID_AGENCIA",:"ID_TIPO_CAPTACION",:"NUMERO_CUENTA",:"DIGITO_CUENTA",');
                 SQL.Add(':"ANO",:"SALDO_INICIAL")');
                 ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                ParamByName('ID_TIPO_CAPTACION').AsInteger := TipoCaptacion;
-                ParamByName('NUMERO_CUENTA').AsInteger := StrToInt(EdNumeroAho.Caption);
-                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(TipoCaptacion,EdNumeroAho.Caption));
+                ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+                ParamByName('NUMERO_CUENTA').AsInteger := Consecutivo;
+                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(IBQforma.FieldByName('ID_TIPO_CAPTACION').AsInteger,EdNumeroAho.Caption));
                 ParamByName('ANO').AsString := FormatFloat('0000',YearOf(EdFechaAperturaAho.Date));
                 ParamByName('SALDO_INICIAL').AsCurrency := 0;
                 try
@@ -975,87 +939,12 @@ begin
                 end;
                 end;
                 Close;
-                {SQL.Clear;
-                SQL.Add('insert into "cap$maestrobeneficiario" (ID_AGENCIA,ID_TIPO_CAPTACION,');
-                SQL.Add('NUMERO_CUENTA,DIGITO_CUENTA,PRIMER_APELLIDO,SEGUNDO_APELLIDO,');
-                SQL.Add('NOMBRE,ID_PARENTESCO,PORCENTAJE) values (');
-                SQL.Add(':"ID_AGENCIA",:"ID_TIPO_CAPTACION",:"NUMERO_CUENTA",:"DIGITO_CUENTA",');
-                SQL.Add(':"PRIMER_APELLIDO",:"SEGUNDO_APELLIDO",:"NOMBRE",:"ID_PARENTESCO",:"PORCENTAJE")');
-                ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                ParamByName('ID_TIPO_CAPTACION').AsInteger := DBLCBTiposCaptacion.KeyValue;
-                ParamByName('NUMERO_CUENTA').AsInteger := StrToInt(EdNumeroAho.Caption);
-                ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(DBLCBTiposCaptacion.KeyValue,EdNumeroAho.Caption));
-                for i := 1 to GridBeneficiariosAho.RowCount-1 do
-                begin
-                   if GridBeneficiariosAho.Cells[2,i] <> '' then
-                   begin
-                      ParamByName('PRIMER_APELLIDO').AsString := GridBeneficiariosAho.Cells[0,i];
-                      ParamByName('SEGUNDO_APELLIDO').AsString := GridBeneficiariosAho.Cells[1,i];
-                      ParamByName('NOMBRE').AsString := GridBeneficiariosAho.Cells[2,i];
-                      with dmCaptacion.IBSQL1 do
-                      begin
-                        SQL.Clear;
-                        SQL.Add('select ID_PARENTESCO from "gen$tiposparentesco" where ');
-                        SQL.Add('DESCRIPCION_PARENTESCO = :"D"');
-                        ParamByName('D').AsString := GridBeneficiariosAho.Cells[3,i];
-                        ExecQuery;
-                        if RecordCount > 0 then
-                           Consecutivo := FieldByName('ID_PARENTESCO').AsInteger
-                        else
-                           Consecutivo := 0;
-                        Close;
-                      end;
-                      ParamByName('ID_PARENTESCO').AsInteger := Consecutivo;
-                      try
-                        ParamByName('PORCENTAJE').AsFloat := StrToFloat(GridBeneficiariosAho.Cells[4,i]);
-                      except
-                        ParamByName('PORCENTAJE').AsFloat := 0;
-                      end;
-                      try
-                        ExecQuery;
-                        Close;
-                      except
-                      begin
-                        Result := False;
-                        Abort;
-                      end;
-                      end;
-                   end;
-                end;
-                Close;}
-                {if ( DBLCBTiposIdentificacion5.KeyValue > 0 ) and
-                   ( EdIdentificacionAutAho.Text <> '' ) then
-                begin
-                 SQL.Clear;
-                 SQL.Add('insert into "cap$maestroautorizado" (ID_AGENCIA,ID_TIPO_CAPTACION,');
-                 SQL.Add('NUMERO_CUENTA,DIGITO_CUENTA,ID_IDENTIFICACION,ID_PERSONA,');
-                 SQL.Add('PRIMER_APELLIDO,SEGUNDO_APELLIDO,NOMBRE) values (');
-                 SQL.Add(':"ID_AGENCIA",:"ID_TIPO_CAPTACION",:"NUMERO_CUENTA",:"DIGITO_CUENTA",');
-                 SQL.Add(':"ID_IDENTIFICACION",:"ID_PERSONA",:"PRIMER_APELLIDO",:"SEGUNDO_APELLIDO",:"NOMBRE")');
-                 ParamByName('ID_AGENCIA').AsInteger := Agencia;
-                 ParamByName('ID_TIPO_CAPTACION').AsInteger := DBLCBTiposCaptacion.KeyValue;
-                 ParamByName('NUMERO_CUENTA').AsInteger := StrToInt(EdNumeroAho.Caption);
-                 ParamByName('DIGITO_CUENTA').AsInteger := StrToInt(DigitoControl(DBLCBTiposCaptacion.KeyValue,EdNumeroAho.Caption));
-                 ParamByName('ID_IDENTIFICACION').AsInteger := DBLCBTiposIdentificacion5.KeyValue;
-                 ParamByName('ID_PERSONA').AsString := EdIdentificacionAutAho.Text;
-                 ParamByName('PRIMER_APELLIDO').AsString := EdPrimerApellidoAutAho.Text;
-                 ParamByName('SEGUNDO_APELLIDO').AsString := EdSegundoApellidoAutAho.Text;
-                 ParamByName('NOMBRE').AsString := EdNombresAutAho.Text;
-                 try
-                    ExecQuery;
-                 except
-                     Result := False;
-                     Abort;
-                 end;
-                end;}
+
        end;
-       if (chkSubCuenta.Checked) or (DBLCBTiposCaptacion.KeyValue <> 2) then
-          Result := true
-       else
-       if GrabarAportacion then
-         Result := True
-       else
-         Result := False;
+        IBQforma.Next;
+       end;
+       Result := True
+
 end;
 
 function TfrmCreacionCaptacion.GrabarContractual: Boolean;
@@ -2357,103 +2246,17 @@ end;
 function TfrmCreacionCaptacion.ValidarAportacion: Boolean;
 var ARecord:PMyListAho;
     Query,Retorno:TStringList;
-    Root:TJvSimpleXmlElemClassic;
-    ANode:TJvSimpleXmlElemClassic;
-    Nodo:TJvSimpleXmlElemClassic;
+
 
     i,inic:Integer;
     Cadena:string;
     Size:Integer;
-    AStream:TMemoryStream;
-    RDoc :TsdXmlDocument;
-//    RDoc:TJvSimpleXml;
-    Total :Integer;
-    ReNodo:TXmlNode;
-    ReNodo1:TXmlNode;
-    ReNodo2:TXmlNode;
+    Total: Integer;
 begin
-         RDoc := TsdXmlDocument.Create;
-//         RDoc := TJvSimpleXml.Create(nil);
-         ARecord := MyListAho.Items[0];
-         Query := TStringList.Create;
-         Query.Add('SELECT Count(*) as Total from "cap$maestro"');
-         Query.Add('INNER JOIN "cap$maestrotitular" ON ("cap$maestro".ID_AGENCIA = "cap$maestrotitular".ID_AGENCIA and ');
-         Query.Add('"cap$maestro".ID_TIPO_CAPTACION = "cap$maestrotitular".ID_TIPO_CAPTACION and "cap$maestro".NUMERO_CUENTA = "cap$maestrotitular".NUMERO_CUENTA and');
-         Query.Add('"cap$maestro".DIGITO_CUENTA = "cap$maestrotitular".DIGITO_CUENTA)');
-         Query.Add('WHERE "cap$maestrotitular".ID_IDENTIFICACION = ');
-         Query.Add(IntToStr(ARecord.TipoId));
-         Query.Add(' and "cap$maestrotitular".ID_PERSONA = ');
-         Query.Add(QuotedStr(ARecord.NumeroId));
-         Query.Add(' and "cap$maestrotitular".ID_TIPO_CAPTACION = 1 and "cap$maestro".ID_ESTADO NOT IN (2,9,11,15)');
-         ADoc.Root.Name := 'query_info';
-         ANode := ADoc.Root.Items.Add('querys');
-         Nodo := ANode.Items.Add('query');
-         Nodo.Items.Add('tipo','select');
-         Nodo.Items.Add('sentencia',Query.Text);
-         ADoc.SaveToFile('C:\Peticion2.xml');
-         IBSQL1.Close;
-         IBSQL1.SQL.Clear;
-         IBSQL1.SQL.Add('select * from "gen$agencia" where "gen$agencia".ACTIVA = 1 order by ID_AGENCIA');
-         try
-           IBSQL1.ExecQuery;
-         except
-           IBSQL1.Transaction.Rollback;
-           raise;
-           Result := True;
-           Exit;
-         end;
-         while not IBSQL1.Eof do
-         begin
-           with IdTCPClient1 do
-           begin
-             Host := IBSQL1.FieldByName('HOST').AsString;
-             Port := IBSQL1.FieldByName('PORT').AsInteger;
-             Application.ProcessMessages;
-             try
-              Connect;
-              if Connected then
-              begin
-                frmProgreso := TfrmProgreso.Create(self);
-                frmProgreso.Titulo := 'Recibiendo Informacion...';
-                frmProgreso.InfoLabel := 'Kbs Recibidos';
-                frmProgreso.Min := 0;
-                frmProgreso.Ejecutar;
-                Cadena := ReadLn();
-                AStream := TMemoryStream.Create;
-                ADoc.SaveToStream(AStream);
-                AStream.Seek(0,soFromEnd);
-                Size := AStream.Size;
-                WriteInteger(Size,True);
-                OpenWriteBuffer;
-                WriteStream(AStream);
-                CloseWriteBuffer;
-                FreeAndNil(AStream);
-                Size := ReadInteger(True);
-                AStream := TMemoryStream.Create;
-                ReadStream(AStream,Size,False);
-                RDoc.Root.Clear;
-                RDoc.LoadFromStream(AStream);
-                RDoc.SaveToFile('C:\Respuesta1.xml');
-                Total := RDoc.Root.Nodes[0].Nodes[0].Nodes[0].ValueAsInteger;
-                Disconnect;
-                frmProgreso.Cerrar;
-              end; // fin if connected
-             except
-                MessageDlg('No se pudo verificar oficina: '+ IBSQL1.Fieldbyname('DESCRIPCION_AGENCIA').AsString,
-                           mtError,[mbOk],0);
-             end;
-            end; // fin with IdTCPClient
-           if Total > 0 then
-           begin
-             ShowMessage('Este documento presenta Cuenta de Aportes ACTIVA' + #13 + 'en la oficina:' + IBSQL1.FieldByName('DESCRIPCION_AGENCIA').AsString);
-             Result := True;
-             Exit;
-           end;
-           IBSQL1.Next;
-        end; // fin while not IBSQL1.eof
+
 
 // Validando Local
-{        with ibsql1 do begin
+        with ibsql1 do begin
          Close;
          SQL.Clear;
          SQL.Add('SELECT Count(*) as Total from "cap$maestro"');
@@ -2463,8 +2266,8 @@ begin
          SQL.Add('WHERE "cap$maestrotitular".ID_IDENTIFICACION = :ID_IDENTIFICACION and');
          SQL.Add('"cap$maestrotitular".ID_PERSONA = :ID_PERSONA and ');
          SQL.Add('"cap$maestrotitular".ID_TIPO_CAPTACION = 1 and "cap$maestro".ID_ESTADO <> 2 and "cap$maestro".ID_ESTADO <> 9');
-         ParamByName('ID_IDENTIFICACION').AsInteger := ARecord^.TipoId;
-         ParamByName('ID_PERSONA').AsString := ARecord^.NumeroId;
+         ParamByName('ID_IDENTIFICACION').AsInteger := DBLCBTiposIdentificacion2.KeyValue;
+         ParamByName('ID_PERSONA').AsString := EdNumeroIdentificacionAho.Text;
          try
            ExecQuery;
            if RecordCount > 0 then
@@ -2480,9 +2283,8 @@ begin
             MessageDlg('Error Buscando Otras Aportaciones',mtError,[mbcancel],0);
             Result := False;
          end;
-         Transaction.CommitRetaining;
         end;
-}
+
 // Buscando en otras Oficinas
 
 end;

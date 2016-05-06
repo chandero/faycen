@@ -101,7 +101,7 @@ object TprTxReport
   object prTxPage1: TprTxPage
     PageType = tptPage
     LineNum = 30
-    ColNum = 140
+    ColNum = 160
     object prTxHTitleBand1: TprTxHTitleBand
       Height = 8
       UseVerticalBands = False
@@ -126,7 +126,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 0
-        dRec.Right = 140
+        dRec.Right = 80
         dRec.Bottom = 1
         Visible = False
       end
@@ -166,7 +166,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 1
-        dRec.Right = 140
+        dRec.Right = 80
         dRec.Bottom = 2
         Visible = False
       end
@@ -191,7 +191,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 2
-        dRec.Right = 140
+        dRec.Right = 80
         dRec.Bottom = 3
         Visible = False
       end
@@ -201,7 +201,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              'Direcci'#243'n: [DIRECCION]')
+              'Direcci'#162'n: [DIRECCION]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -210,10 +210,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
         dRec.Left = 0
         dRec.Top = 4
-        dRec.Right = 69
+        dRec.Right = 33
         dRec.Bottom = 5
         Visible = False
       end
@@ -232,10 +235,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
-        dRec.Left = 70
+        dRec.Left = 34
         dRec.Top = 4
-        dRec.Right = 89
+        dRec.Right = 51
         dRec.Bottom = 5
         Visible = False
       end
@@ -254,10 +260,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
-        dRec.Left = 91
+        dRec.Left = 52
         dRec.Top = 4
-        dRec.Right = 123
+        dRec.Right = 74
         dRec.Bottom = 5
         Visible = False
       end
@@ -276,10 +285,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
         dRec.Left = 0
         dRec.Top = 3
-        dRec.Right = 103
+        dRec.Right = 38
         dRec.Bottom = 4
         Visible = False
       end
@@ -298,10 +310,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
-        dRec.Left = 111
+        dRec.Left = 39
         dRec.Top = 3
-        dRec.Right = 127
+        dRec.Right = 55
         dRec.Bottom = 4
         Visible = False
       end
@@ -320,10 +335,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
-        dRec.Left = 130
+        dRec.Left = 71
         dRec.Top = 3
-        dRec.Right = 139
+        dRec.Right = 80
         dRec.Bottom = 4
         Visible = False
       end
@@ -342,10 +360,13 @@ object TprTxReport
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
+            TxFontOptionsEx = (
+              tfoBold
+              tfoWide)
           end>
-        dRec.Left = 124
+        dRec.Left = 75
         dRec.Top = 4
-        dRec.Right = 133
+        dRec.Right = 79
         dRec.Bottom = 5
         Visible = False
       end
@@ -358,7 +379,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 5
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 6
         Visible = False
       end
@@ -369,9 +390,9 @@ object TprTxReport
             Visible = True
             MainChar = '='
           end>
-        dRec.Left = -1
+        dRec.Left = 0
         dRec.Top = 7
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 8
         Visible = False
       end
@@ -437,7 +458,7 @@ object TprTxReport
           end>
         dRec.Left = 19
         dRec.Top = 6
-        dRec.Right = 39
+        dRec.Right = 45
         dRec.Bottom = 7
         Visible = False
       end
@@ -457,9 +478,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 40
+        dRec.Left = 46
         dRec.Top = 6
-        dRec.Right = 47
+        dRec.Right = 57
         dRec.Bottom = 7
         Visible = False
       end
@@ -479,9 +500,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 48
+        dRec.Left = 58
         dRec.Top = 6
-        dRec.Right = 63
+        dRec.Right = 73
         dRec.Bottom = 7
         Visible = False
       end
@@ -501,9 +522,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 64
+        dRec.Left = 74
         dRec.Top = 6
-        dRec.Right = 66
+        dRec.Right = 76
         dRec.Bottom = 7
         Visible = False
       end
@@ -523,9 +544,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 67
+        dRec.Left = 77
         dRec.Top = 6
-        dRec.Right = 69
+        dRec.Right = 79
         dRec.Bottom = 7
         Visible = False
       end
@@ -545,9 +566,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 70
+        dRec.Left = 80
         dRec.Top = 6
-        dRec.Right = 85
+        dRec.Right = 95
         dRec.Bottom = 7
         Visible = False
       end
@@ -567,9 +588,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 86
+        dRec.Left = 96
         dRec.Top = 6
-        dRec.Right = 95
+        dRec.Right = 110
         dRec.Bottom = 7
         Visible = False
       end
@@ -589,9 +610,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 96
+        dRec.Left = 111
         dRec.Top = 6
-        dRec.Right = 105
+        dRec.Right = 122
         dRec.Bottom = 7
         Visible = False
       end
@@ -611,9 +632,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 106
+        dRec.Left = 123
         dRec.Top = 6
-        dRec.Right = 114
+        dRec.Right = 134
         dRec.Bottom = 7
         Visible = False
       end
@@ -633,9 +654,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 115
+        dRec.Left = 135
         dRec.Top = 6
-        dRec.Right = 124
+        dRec.Right = 144
         dRec.Bottom = 7
         Visible = False
       end
@@ -655,9 +676,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 125
+        dRec.Left = 145
         dRec.Top = 6
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 7
         Visible = False
       end
@@ -679,7 +700,7 @@ object TprTxReport
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhLeft
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
@@ -723,14 +744,14 @@ object TprTxReport
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhLeft
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
         dRec.Left = 19
         dRec.Top = 0
-        dRec.Right = 39
+        dRec.Right = 45
         dRec.Bottom = 1
         Visible = False
       end
@@ -750,9 +771,9 @@ object TprTxReport
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 40
+        dRec.Left = 46
         dRec.Top = 0
-        dRec.Right = 47
+        dRec.Right = 57
         dRec.Bottom = 1
         Visible = False
       end
@@ -762,19 +783,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.VALOR_DESEMBOLSO]')
+              '[:<#,##0;(#,##0)>CDSextracto.VALOR_DESEMBOLSO]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 48
+        dRec.Left = 58
         dRec.Top = 0
-        dRec.Right = 63
+        dRec.Right = 73
         dRec.Bottom = 1
         Visible = False
       end
@@ -789,14 +810,14 @@ object TprTxReport
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhLeft
+            hAlign = prhCenter
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 64
+        dRec.Left = 74
         dRec.Top = 0
-        dRec.Right = 66
+        dRec.Right = 76
         dRec.Bottom = 1
         Visible = False
       end
@@ -811,14 +832,14 @@ object TprTxReport
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhLeft
+            hAlign = prhCenter
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 67
+        dRec.Left = 77
         dRec.Top = 0
-        dRec.Right = 69
+        dRec.Right = 79
         dRec.Bottom = 1
         Visible = False
       end
@@ -828,19 +849,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.SALDO_ANTERIOR]')
+              '[:<#,##0;(#,##0)>CDSextracto.SALDO_ANTERIOR]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 70
+        dRec.Left = 80
         dRec.Top = 0
-        dRec.Right = 85
+        dRec.Right = 95
         dRec.Bottom = 1
         Visible = False
       end
@@ -850,19 +871,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.PAGOS]')
+              '[:<#,##0;(#,##0)>CDSextracto.PAGOS]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 86
+        dRec.Left = 96
         dRec.Top = 0
-        dRec.Right = 95
+        dRec.Right = 110
         dRec.Bottom = 1
         Visible = False
       end
@@ -872,19 +893,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.CAPITAL]')
+              '[:<#,##0;(#,##0)>CDSextracto.CAPITAL]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 96
+        dRec.Left = 111
         dRec.Top = 0
-        dRec.Right = 105
+        dRec.Right = 122
         dRec.Bottom = 1
         Visible = False
       end
@@ -894,19 +915,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.SEGURO]')
+              '[:<#,##0;(#,##0)>CDSextracto.SEGURO]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 115
+        dRec.Left = 135
         dRec.Top = 0
-        dRec.Right = 124
+        dRec.Right = 144
         dRec.Bottom = 1
         Visible = False
       end
@@ -916,19 +937,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.SALDO_SIGUIENTE]')
+              '[:<#,##0;(#,##0)>CDSextracto.SALDO_SIGUIENTE]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 125
+        dRec.Left = 145
         dRec.Top = 0
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 1
         Visible = False
       end
@@ -938,19 +959,19 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CDSextracto.INTERES]')
+              '[:<#,##0;(#,##0)>CDSextracto.INTERES]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhCenter
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
           end>
-        dRec.Left = 106
+        dRec.Left = 123
         dRec.Top = 0
-        dRec.Right = 114
+        dRec.Right = 134
         dRec.Bottom = 1
         Visible = False
       end
@@ -966,7 +987,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 0
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 1
         Visible = False
       end
@@ -978,7 +999,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 2
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 3
         Visible = False
       end
@@ -990,7 +1011,7 @@ object TprTxReport
           end>
         dRec.Left = 0
         dRec.Top = 4
-        dRec.Right = 140
+        dRec.Right = 160
         dRec.Bottom = 5
         Visible = False
       end
@@ -1044,7 +1065,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CXCSALDOANTERIOR]')
+              '[:<#,##0;(#,##0)>CXCSALDOANTERIOR]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -1088,7 +1109,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CXCCARGOMES]')
+              '[:<#,##0;(#,##0)>CXCCARGOMES]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -1132,7 +1153,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CXCPAGOS]')
+              '[:<#,##0;(#,##0)>CXCPAGOS]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -1176,7 +1197,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>CXCAPAGAR]')
+              '[:<#,##0;(#,##0)>CXCAPAGAR]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -1220,7 +1241,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>SUELDO]')
+              '[:<#,##0;(#,##0)>SUELDO]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
@@ -1286,12 +1307,12 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>ALMACEN]')
+              '[:<#,##0;(#,##0)>ALMACEN]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
             CanResizeY = False
-            hAlign = prhLeft
+            hAlign = prhRight
             vAlign = prvTop
             DefaultFont = False
             WordWrap = False
@@ -1330,7 +1351,7 @@ object TprTxReport
           item
             Visible = True
             Memo.Strings = (
-              '[:<c>MERCADO]')
+              '[:<#,##0;(#,##0)>MERCADO]')
             DeleteEmptyLinesAtEnd = False
             DeleteEmptyLines = False
             CanResizeX = False
