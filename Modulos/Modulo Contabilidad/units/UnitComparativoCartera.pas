@@ -129,7 +129,7 @@ var
   Mes : Integer;
   FechaInicial: TDateTime;
   FechaFinal: TDateTime;
-
+  Saldo_Actual : Currency;
 begin
 
         Anho := YearOf(fFechaActual);
@@ -139,25 +139,23 @@ begin
 
         IBQpersona.Close;
         IBQpersona.SQL.Clear;
-        IBQpersona.SQL.Add('SELECT');
-        IBQpersona.SQL.Add('mt.ID_IDENTIFICACION,');
-        IBQpersona.SQL.Add('mt.ID_PERSONA,');
+        IBQpersona.SQL.Add('SELECT DISTINCT');
+        IBQpersona.SQL.Add('c.ID_IDENTIFICACION,');
+        IBQpersona.SQL.Add('c.ID_PERSONA,');
         IBQpersona.SQL.Add('p.NOMBRE || '' '' || p.PRIMER_APELLIDO || '' '' || p.SEGUNDO_APELLIDO  AS NOMBRE,');
-        IBQpersona.SQL.Add('t.CODIGO_CONTABLE,');
-        IBQpersona.SQL.Add('mt.ID_AGENCIA,');
-        IBQpersona.SQL.Add('mt.ID_TIPO_CAPTACION,');
-        IBQpersona.SQL.Add('mt.NUMERO_CUENTA,');
-        IBQpersona.SQL.Add('mt.DIGITO_CUENTA,');
-        IBQpersona.SQL.Add('t.DESCRIPCION AS MODALIDAD');
-        IBQpersona.SQL.Add('FROM "cap$maestrotitular" mt');
-        IBQpersona.SQL.Add('INNER JOIN "gen$persona" p ON p.ID_IDENTIFICACION = mt.ID_IDENTIFICACION and p.ID_PERSONA = mt.ID_PERSONA');
-        IBQpersona.SQL.Add('INNER JOIN "cap$tipocaptacion" t ON t.ID_TIPO_CAPTACION = mt.ID_TIPO_CAPTACION');
+        IBQpersona.SQL.Add('b.COD_CAPITAL_CP,');
+        IBQpersona.SQL.Add('l.DESCRIPCION_LINEA AS MODALIDAD,');
+        IBQpersona.SQL.Add('c.ID_LINEA');
+        IBQpersona.SQL.Add('FROM "col$colocacion" c');
+        IBQpersona.SQL.Add('INNER JOIN "gen$persona" p ON p.ID_IDENTIFICACION = c.ID_IDENTIFICACION and p.ID_PERSONA = c.ID_PERSONA');
+        IBQpersona.SQL.Add('INNER JOIN "col$lineas" l ON c.ID_LINEA = l.ID_LINEA');
+        IBQpersona.SQL.Add('INNER JOIN "col$codigospuc" b ON b.ID_LINEA = c.ID_LINEA and b.ID_GARANTIA = c.ID_GARANTIA');
         if (DBLCBproducto.KeyValue > 0) then
         begin
-                IBQpersona.SQL.Add('WHERE mt.ID_TIPO_CAPTACION = :ID_TIPO_CAPTACION');
-                IBQpersona.ParamByName('ID_TIPO_CAPTACION').AsInteger := IBQproducto.FieldByName('ID_TIPO_CAPTACION').AsInteger;
+                IBQpersona.SQL.Add('WHERE c.ID_LINEA = :ID_LINEA');
+                IBQpersona.ParamByName('ID_LINEA').AsInteger := IBQproducto.FieldByName('ID_LINEA').AsInteger;
         end;
-        IBQpersona.SQL.Add('ORDER BY mt.ID_TIPO_CAPTACION, p.ID_IDENTIFICACION, p.ID_PERSONA');
+        IBQpersona.SQL.Add('ORDER BY c.ID_LINEA, p.ID_IDENTIFICACION, p.ID_PERSONA');
         IBQpersona.Open;
         CDSdatos.Open;
         CDSdatos.EmptyDataSet;
@@ -177,7 +175,7 @@ begin
             IBQauxiliar.Close;
             IBQauxiliar.ParamByName('ID_IDENTIFICACION').AsInteger := IBQpersona.FieldByName('ID_IDENTIFICACION').AsInteger;
             IBQauxiliar.ParamByName('ID_PERSONA').AsString := IBQpersona.FieldByName('ID_PERSONA').AsString;
-            IBQauxiliar.ParamByName('CODIGO').AsString := IBQpersona.FieldByName('CODIGO_CONTABLE').AsString;
+            IBQauxiliar.ParamByName('CODIGO').AsString := IBQpersona.FieldByName('COD_CAPITAL_CP').AsString;
             IBQauxiliar.ParamByName('ANHO').AsInteger := Anho;
             IBQauxiliar.ParamByName('FECHA_INICIAL').AsDate := FechaInicial;
             IBQauxiliar.ParamByName('FECHA_FINAL').AsDate := FechaFinal;

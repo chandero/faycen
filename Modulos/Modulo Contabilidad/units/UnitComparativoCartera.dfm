@@ -245,6 +245,7 @@ object frmComparativoCartera: TfrmComparativoCartera
     Height = 498
     Align = alClient
     DataSource = DSdatos
+    ReadOnly = True
     TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
@@ -273,7 +274,7 @@ object frmComparativoCartera: TfrmComparativoCartera
       end
       item
         Expanded = False
-        FieldName = 'DEPOSITO'
+        FieldName = 'CARTERA'
         Visible = True
       end
       item
@@ -288,8 +289,32 @@ object frmComparativoCartera: TfrmComparativoCartera
       end>
   end
   object CDSdatos: TClientDataSet
+    Active = True
     Aggregates = <>
-    FieldDefs = <>
+    FieldDefs = <
+      item
+        Name = 'ID_PERSONA'
+        DataType = ftString
+        Size = 50
+      end
+      item
+        Name = 'NOMBRE'
+        DataType = ftString
+        Size = 200
+      end
+      item
+        Name = 'MODALIDAD'
+        DataType = ftString
+        Size = 100
+      end
+      item
+        Name = 'CARTERA'
+        DataType = ftCurrency
+      end
+      item
+        Name = 'CONTABLE'
+        DataType = ftCurrency
+      end>
     IndexDefs = <
       item
         Name = 'IndexID_PERSONA'
@@ -308,6 +333,13 @@ object frmComparativoCartera: TfrmComparativoCartera
     OnCalcFields = CDSdatosCalcFields
     Left = 112
     Top = 104
+    Data = {
+      BB0000009619E0BD010000001800000005000000000003000000BB000A49445F
+      504552534F4E410100490000000100055749445448020002003200064E4F4D42
+      5245010049000000010005574944544802000200C800094D4F44414C49444144
+      0100490000000100055749445448020002006400074341525445524108000400
+      0000010007535542545950450200490006004D6F6E65790008434F4E5441424C
+      45080004000000010007535542545950450200490006004D6F6E6579000000}
     object CDSdatosID_PERSONA: TStringField
       DisplayWidth = 20
       FieldName = 'ID_PERSONA'
@@ -365,11 +397,10 @@ object frmComparativoCartera: TfrmComparativoCartera
   end
   object IBQcartera: TIBQuery
     SQL.Strings = (
-      'SELECT SALDO_ACTUAL FROM SALDO_ACTUAL('
-      ':ID_AGENCIA,'
-      ':ID_TIPO_CAPTACION, '
-      ':NUMERO_CUENTA, '
-      ':DIGITO_CUENTA,'
+      'SELECT SALDO_ACTUAL FROM SALDO_ACTUAL_CARTERA('
+      ':ID_IDENTIFICACION,'
+      ':ID_PERSONA,'
+      ':ID_LINEA, '
       ':ANHO, '
       ':FECHA_INICIAL,'
       ':FECHA_FINAL'
@@ -379,22 +410,17 @@ object frmComparativoCartera: TfrmComparativoCartera
     ParamData = <
       item
         DataType = ftUnknown
-        Name = 'ID_AGENCIA'
+        Name = 'ID_IDENTIFICACION'
         ParamType = ptUnknown
       end
       item
         DataType = ftUnknown
-        Name = 'ID_TIPO_CAPTACION'
+        Name = 'ID_PERSONA'
         ParamType = ptUnknown
       end
       item
         DataType = ftUnknown
-        Name = 'NUMERO_CUENTA'
-        ParamType = ptUnknown
-      end
-      item
-        DataType = ftUnknown
-        Name = 'DIGITO_CUENTA'
+        Name = 'ID_LINEA'
         ParamType = ptUnknown
       end
       item

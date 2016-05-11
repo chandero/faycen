@@ -300,7 +300,6 @@ object frmMain: TfrmMain
         end
         object Cartera2: TMenuItem
           Caption = 'Cartera'
-          Visible = False
           OnClick = Cartera2Click
         end
       end
